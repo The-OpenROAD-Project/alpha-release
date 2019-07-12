@@ -1,7 +1,8 @@
+# DESIGN_CONFIG = ./designs/gcd_tsmc65lp.mk
 # DESIGN_CONFIG = ./designs/gcd_freepdk45.mk
 DESIGN_CONFIG = ./designs/gcd_nangate45.mk
-# DESIGN_CONFIG = ./designs/gcd_tsmc65lp.mk
 
+# DESIGN_CONFIG = ./designs/aes_tsmc65lp.mk
 
 
 all: finish
@@ -30,7 +31,7 @@ export TECH_DIR    = ./tech/$(PLATFORM)
 
 # Tool Options
 SHELL = /bin/bash -o pipefail
-export FIGLET_CMD = figlet -d $(OPENROAD)/figlet/fonts/
+export FIGLET_CMD = figlet -c -p -d $(OPENROAD)/figlet/fonts/
 
 # Quick check to make sure OpenROAD tools are installed
 ifeq ("$(OPENROAD)","")

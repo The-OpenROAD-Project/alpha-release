@@ -1,3 +1,4 @@
+export PLATFORM = nangate45
 export PROCESS = 45
 
 export PLACE_SITE = CoreSite

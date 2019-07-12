@@ -1,10 +1,10 @@
 export DESIGN_NAME = aes_cipher_top
 export PLATFORM_CONFIG = ./kits/tsmc65lp/config_umich.mk
 
-export VERILOG_FILES = ./designs/aes_cipher_top/design.v
-export SDC_FILE      = ./designs/aes_cipher_top/design.sdc
+export VERILOG_FILES = ./designs/aes/design.v
+export SDC_FILE      = ./designs/aes/design.sdc
 
-export MERGED_LEF = ./kits/tsmc65lp/tech/merged.lef
+export MERGED_LEF = ./kits/tsmc65lp/merged.lef
 export LIB_FILES  = $(wildcard ./kits/tsmc65lp/lib/*.lib)
 export GDS_FILES  = $(wildcard ./kits/tsmc65lp/gds/*.gds2)
 
