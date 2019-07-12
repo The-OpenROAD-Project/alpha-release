@@ -11,8 +11,5 @@ See the build [README](build#creating-builds) on how to build and assembling all
 ## Install
 See instructions in the build [README](build#installing-builds) on how to install a pre-compiled package unto a Linux system
 
-## Running/Testing
-See instructions in the test [README](test#testing-layout) on how to run/test the flow and the different steps
-
-## Testcases
-See information about our testcases in this [README](test/testcases#testcases).
+## Running
+See instructions in the flow [README](flow#running-the-flow) on how to run/test the flow
