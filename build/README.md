@@ -21,8 +21,10 @@ Other interesting make targets
 - `make export-tools` This will create a tar.gz export of all tools
 
 ## Installing Builds
-The builds can be installed to any Redhat 6/7 based machine using the [modules installation system](https://modules.readthedocs.io/en/latest/). Download a build (`OpenROAD-XXXX-XX-XX_XX-XX.tar.gz`) from the [release](https://github.com/The-OpenROAD-Project/alpha-release/releases) tab and perform the following steps to install
-modules can be installed with "sudo apt-get install environment-modules"
+The builds can be installed to any Redhat 6/7 based machine using the [modules installation system](https://modules.readthedocs.io/en/latest/). Download a build (`OpenROAD-XXXX-XX-XX_XX-XX.tar.gz`) from the [release](https://github.com/The-OpenROAD-Project/alpha-release/releases) tab and perform the following steps to install.
+
+Modules can be installed with "sudo apt-get install environment-modules".
+Then run add.modules to add the module command to your shell init files.
 
 ### Prerequisites on run system
 1. environment-modules
