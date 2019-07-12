@@ -1,0 +1,17 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ad32e52..a5a3e99 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -304,6 +304,12 @@ target_link_libraries(verilog2def
+   def
+   )
+ 
++# g++ std::thread apparently still needs -pthreads.
++if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
++  target_link_libraries(verilog2def -pthread)
++endif()
++
++
+ if (ZLIB_FOUND)
+   target_link_libraries(verilog2def ${ZLIB_LIBRARIES})
+ endif()

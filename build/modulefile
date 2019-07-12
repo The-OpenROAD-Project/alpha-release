@@ -1,0 +1,24 @@
+#%Module1.0#####################################################################
+##
+## OpenROAD modulefile
+##
+##
+proc ModulesHelp { } {
+  global version modroot
+
+  puts stderr "\n\tThis module configures OpenROAD\n"
+}
+
+module-whatis "loads OpenROAD"
+
+set version       @TIMESTAMP@
+set modroot       [file normalize [file dirname $ModulesCurrentModulefile ]/../../OpenROAD-$version]
+
+conflict OpenROAD
+
+setenv         OPENROAD    $modroot
+setenv         OPENROADOS  Linux-x86_64
+
+prepend-path   PATH            $modroot/bin:$modroot/bin/Linux-x86_64
+prepend-path   LD_LIBRARY_PATH $modroot/lib:$modroot/lib/Linux-x86_64
+prepend-path   MANPATH         $modroot/share/man

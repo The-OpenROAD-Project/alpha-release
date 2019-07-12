@@ -1,0 +1,40 @@
+# syntax = docker/dockerfile:1.0-experimental
+FROM centos:centos6 as build
+MAINTAINER Tutu Ajayi "ajayi@umich.edu"
+
+# # install gcc 8
+RUN yum -y install centos-release-scl && \
+    yum -y install devtoolset-8 devtoolset-8-libatomic-devel
+ENV CC=/opt/rh/devtoolset-8/root/usr/bin/gcc \
+    CPP=/opt/rh/devtoolset-8/root/usr/bin/cpp \
+    CXX=/opt/rh/devtoolset-8/root/usr/bin/g++ \
+    PATH=/opt/rh/devtoolset-8/root/usr/bin:$PATH \
+    LD_LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib:/opt/rh/devtoolset-8/root/usr/lib64/dyninst:/opt/rh/devtoolset-8/root/usr/lib/dyninst:/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib:$LD_LIBRARY_PATH
+
+RUN yum install -y wget git pcre-devel tcl-devel tk-devel vim
+
+RUN wget http://prdownloads.sourceforge.net/swig/swig-4.0.0.tar.gz && \
+    tar -xf swig-4.0.0.tar.gz && \
+    cd swig-4.0.0 && \
+    ./configure && \
+    make && \
+    make install
+
+
+# download public key for github.com
+RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+RUN --mount=type=ssh \
+  git clone git@github.com:abk-openroad/pdn.git
+
+WORKDIR pdn
+
+RUN make release
+
+RUN mkdir -p /build/bin/ && \
+    cp /pdn/bin/tapcell /build/bin/
+
+RUN date +"Build Timestamp: %Y-%m-%d_%H-%M-%S" > /build/pdn.version
+RUN git rev-parse HEAD >> /build/pdn.version
+RUN tar -czf /build.tar.gz /build
+
