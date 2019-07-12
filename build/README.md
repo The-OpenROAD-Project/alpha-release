@@ -21,12 +21,13 @@ Other interesting make targets
 - `make export-tools` This will create a tar.gz export of all tools
 
 ## Installing Builds
-The builds can be installed to any Redhat 6/7 based machine using the [modules installation system](https://modules.readthedocs.io/en/latest/). Download a build from the [releases](https://github.com/The-OpenROAD-Project/CI/releases) and perform the following steps to install
+The builds can be installed to any Redhat 6/7 based machine using the [modules installation system](https://modules.readthedocs.io/en/latest/). Download a build (`OpenROAD-XXXX-XX-XX_XX-XX.tar.gz
+`) from the [release](https://github.com/The-OpenROAD-Project/alpha-release/releases) tab and perform the following steps to install
 
 ### Prerequisites on run system
-1. environment-modules - all
-1. Python3 - TritonCTS
-1. tcl8.5 & tk8.5 - many
+1. environment-modules
+1. Python3
+1. tcl8.5 & tk8.5
 
 ### Install procedure
 ```
