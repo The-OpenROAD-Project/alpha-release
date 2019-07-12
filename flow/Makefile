@@ -1,6 +1,6 @@
 # DESIGN_CONFIG = ./designs/gcd_freepdk45.mk
-# DESIGN_CONFIG = ./designs/gcd_nangate45.mk
-DESIGN_CONFIG = ./designs/gcd_tsmc65lp.mk
+DESIGN_CONFIG = ./designs/gcd_nangate45.mk
+# DESIGN_CONFIG = ./designs/gcd_tsmc65lp.mk
 
 
 
