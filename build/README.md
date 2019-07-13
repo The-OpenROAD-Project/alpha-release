@@ -30,6 +30,7 @@ Then run add.modules to add the module command to your shell init files.
 1. environment-modules
 1. Python3
 1. tcl8.5 & tk8.5
+1. libreadline6 for yosys
 
 ### Install procedure
 ```
