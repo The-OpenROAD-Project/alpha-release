@@ -23,11 +23,7 @@ Other interesting make targets
 ## Installing Builds
 The builds can be installed to any Redhat 6/7 based machine using the [modules installation system](https://modules.readthedocs.io/en/latest/). Download a build (`OpenROAD-XXXX-XX-XX_XX-XX.tar.gz`) from the [release](https://github.com/The-OpenROAD-Project/alpha-release/releases) tab and perform the following steps to install.
 
-Modules can be installed with "sudo apt-get install environment-modules".
-Then run add.modules to add the module command to your shell init files.
-
 ### Prerequisites on run system
-1. environment-modules
 1. Python3
 1. tcl8.5 & tk8.5
 1. libreadline6 for yosys
@@ -36,7 +32,7 @@ Then run add.modules to add the module command to your shell init files.
 ### Install procedure
 ```
 tar -xzf Openroad{version}.tar.gz
-module use modules
-module load openroad
+cd openroad
+source setup.sh
 ```
-Once installed, all OpenROAD binaries should now be in your path.
+Once installed, all OpenROAD binaries should now be in your system path.
