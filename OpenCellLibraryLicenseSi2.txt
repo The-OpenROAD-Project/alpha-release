@@ -1,4 +1,6 @@
-Conditions for Use
+The Open Cell Library files are in flow/kits
+
+Conditions for Use :
 The Open Cell Library is intended for use by universities, other research activities, educational programs and Si2.org members. 
 However allowed, the Open Cell Library is not intended for commercial use. 
 If you have questions or concerns then please contact Si2
