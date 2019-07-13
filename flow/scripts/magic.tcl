@@ -1,4 +1,4 @@
-# scalegrid 1 10
+scalegrid 1 10
 box 0 0 0 0
 drc off
 snap int

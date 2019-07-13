@@ -1,5 +1,5 @@
 export DESIGN_NAME = gcd
-include ./kits/tsmc65lp/config_umich.mk
+export PLATFORM_CONFIG = ./kits/tsmc65lp/config.mk
 
 export VERILOG_FILES = ./designs/gcd/design.v
 export SDC_FILE      = ./designs/gcd/design.sdc

@@ -6,7 +6,7 @@ orparam def $::env(RESULTS_DIR)/cts.def
 # orparam gcell tracks 24
 
 orparam gcell dimension {6000 6000 0 0 dbunits}
-orparam gcell utilization 75
+# orparam gcell utilization 75
 orparam toplayer 7
 
 orparam gscale 2000.0
