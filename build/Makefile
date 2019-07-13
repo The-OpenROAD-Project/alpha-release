@@ -32,16 +32,11 @@ $(DOWNLOAD_DIR)/rtGuideGen: FORCE
 	wget https://vlsicad.ucsd.edu/~bangqixu/toTutu/routeguide_gen/FlexRoute -O $@
 	chmod +x $@
 
-# $(DOWNLOAD_DIR)/FlexRoute: FORCE
-# 	mkdir -p $(DOWNLOAD_DIR)
-# 	wget https://vlsicad.ucsd.edu/~bangqixu/toTutu/FlexRoute/FlexRoute -O $@
-# 	chmod +x $@
 
 # ==============================================================================
 # Build Tools
 # ==============================================================================
 TOOLS = yosys replace magic cts ioplacer pdn opendp resizer route macroplacer
-# TOOLS = yosys utd replace magic cts ioplacer pdn opendp resizer route macroplacer
 
 TOOL_BUILD_TARGETS = $(foreach tool,$(TOOLS),build-$(tool))
 TOOL_RUN_TARGETS = $(foreach tool,$(TOOLS),run-$(tool))
@@ -84,8 +79,11 @@ export-tools: $(TOOL_EXPORT_TARGETS) downloads
 	cp $(DOWNLOAD_DIR)/* export/OpenROAD-$(TIMESTAMP)/bin
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./modulefile > export/modules/openroad/$(TIMESTAMP)
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./versionfile > export/modules/openroad/.version
-	tar -C export -czf export/OpenROAD-$(TIMESTAMP).tar.gz OpenROAD-$(TIMESTAMP) modules
-	# rm -rf export/OpenROAD-$(TIMESTAMP).tar.gz export/OpenROAD-$(TIMESTAMP) export/modules
+	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./setup.sh > export/setup.sh
+	chmod +x export/setup.sh
+	tar -C export -czf export/OpenROAD-$(TIMESTAMP).tar.gz OpenROAD-$(TIMESTAMP) modules setup.sh \
+		  --transform 's,^,openroad/,'
+
 
 
 # NOTE: This does not clean the docker images
