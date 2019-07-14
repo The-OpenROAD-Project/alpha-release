@@ -41,7 +41,10 @@ flow/*.met
 flow/*.opennet
 
 # TSMC65 LP
-flow/kits/tsmc65lp/
+flow/platforms/tsmc65lp/
+
+
+flow/parallel*
 
 # network
 .nfs*

@@ -3,14 +3,14 @@
 # ==============================================================================
 
 # DESIGN_CONFIG = ./designs/gcd_tsmc65lp.mk
-# DESIGN_CONFIG = ./designs/gcd_freepdk45.mk
+DESIGN_CONFIG = ./designs/gcd_freepdk45.mk
 # DESIGN_CONFIG = ./designs/gcd_nangate45.mk
 
 # DESIGN_CONFIG = ./designs/aes_tsmc65lp.mk
 
 # DESIGN_CONFIG = ./designs/jpeg_tsmc65lp.mk
 
-DESIGN_CONFIG = ./designs/vb_tsmc65lp.mk
+# DESIGN_CONFIG = ./designs/vb_tsmc65lp.mk
 
 # DESIGN_CONFIG ?= ./designs/m0_tsmc65lp.mk
 
