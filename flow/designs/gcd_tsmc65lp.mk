@@ -1,8 +1,8 @@
 export DESIGN_NAME = gcd
-export PLATFORM_CONFIG = ./kits/tsmc65lp/config.mk
+export PLATFORM    = tsmc65lp
 
-export VERILOG_FILES = ./designs/gcd/design.v
-export SDC_FILE      = ./designs/gcd/design.sdc
+export VERILOG_FILES = ./designs/src/gcd/design.v
+export SDC_FILE      = ./designs/src/gcd/design.sdc
 
 export MERGED_LEF = ../../CI/test/testcases/tsmc65lp/tech/tech_macro.lef
 export LIB_FILES  = ../../CI/test/testcases/tsmc65lp/lib/sc12_cln65lp_base_rvt_ss_typical_max_1p08v_125c.lib

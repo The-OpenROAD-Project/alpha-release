@@ -1,12 +1,12 @@
 export DESIGN_NAME = gcd
-export PLATFORM_CONFIG = ./kits/freepdk45/config.mk
+export PLATFORM    = freepdk45
 
-export VERILOG_FILES = ./designs/gcd/design.v
-export SDC_FILE      = ./designs/gcd/design.sdc
+export VERILOG_FILES = ./designs/src/gcd/design.v
+export SDC_FILE      = ./designs/src/gcd/design.sdc
 
-export MERGED_LEF = ./kits/freepdk45/gscl45nm.mod.lef
-export LIB_FILES  = ./kits/freepdk45/gscl45nm.lib
-export GDS_FILES  = $(wildcard ./kits/freepdk45/gds/*)
+export MERGED_LEF = ./platforms/freepdk45/gscl45nm.mod.lef
+export LIB_FILES  = ./platforms/freepdk45/gscl45nm.lib
+export GDS_FILES  = $(wildcard ./platforms/freepdk45/gds/*)
 
 export DIE_AREA    = 0.0  0.0  148.0 148.0
 export CORE_AREA   = 14.0 14.0 134.0 134.0

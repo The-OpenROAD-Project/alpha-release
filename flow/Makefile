@@ -4,11 +4,16 @@
 
 # DESIGN_CONFIG = ./designs/gcd_tsmc65lp.mk
 # DESIGN_CONFIG = ./designs/gcd_freepdk45.mk
-DESIGN_CONFIG = ./designs/gcd_nangate45.mk
+# DESIGN_CONFIG = ./designs/gcd_nangate45.mk
 
 # DESIGN_CONFIG = ./designs/aes_tsmc65lp.mk
 
-# DESIGN_CONFIG = ./designs/vb_tsmc65lp.mk
+# DESIGN_CONFIG = ./designs/jpeg_tsmc65lp.mk
+
+DESIGN_CONFIG = ./designs/vb_tsmc65lp.mk
+
+# DESIGN_CONFIG ?= ./designs/m0_tsmc65lp.mk
+
 
 
 all: finish
@@ -24,7 +29,7 @@ all: finish
 
 # Include design and platform configuration
 include $(DESIGN_CONFIG)
-include $(PLATFORM_CONFIG)
+include ./platforms/$(PLATFORM)/config.mk
 
 # Setup working directories
 export LOG_DIR     = ./logs/$(DESIGN_NAME)
@@ -33,7 +38,7 @@ export REPORTS_DIR = ./reports/$(DESIGN_NAME)
 export RESULTS_DIR = ./results/$(DESIGN_NAME)
 
 export SCRIPTS_DIR = ./scripts
-export TECH_DIR    = ./tech/$(PLATFORM)
+export TECH_DIR    = ./tech/$(DESIGN_NAME)
 
 # Tool Options
 SHELL = /bin/bash -o pipefail
@@ -432,9 +437,16 @@ clean_all: clean_synth clean_floorplan clean_place clean_cts clean_route clean_f
 	rm -rf POST9.dat PORT9.dat POWV9.dat
 	rm -rf ../etc/POST9.dat ../etc/PORT9.dat ../etc/POWV9.dat
 
+
+# ==============================================================================
 $(foreach def,$(notdir $(wildcard $(RESULTS_DIR)/*.def)),debug_$(def)): debug_%:
 	innovus -execute "loadLefFile $(MERGED_LEF) ; \
 	                  loadDefFile $(RESULTS_DIR)/$* ; \
 	                  win" \
 	                  -no_logv ; stty sane
 
+parallel:
+	parallel --sshloginfile parallelNodes.txt \
+	         --timeout 21600 \
+	         --workdir `pwd` < parallelScript.txt \
+	         --joblog parallel.log

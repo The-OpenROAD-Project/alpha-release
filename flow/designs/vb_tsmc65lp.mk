@@ -1,12 +1,12 @@
 export DESIGN_NAME = bsg_manycore_tile
-export PLATFORM_CONFIG = ./kits/tsmc65lp/config.mk
+export PLATFORM    = tsmc65lp
 
-export VERILOG_FILES = ./designs/vb/design.v
-export SDC_FILE      = ./designs/vb/design.sdc
+export VERILOG_FILES = ./designs/src/vb/design.v
+export SDC_FILE      = ./designs/src/vb/design.sdc
 
-export MERGED_LEF = ./kits/tsmc65lp/merged.lef
-export LIB_FILES  = $(wildcard ./kits/tsmc65lp/lib/*.lib)
-export GDS_FILES  = $(wildcard ./kits/tsmc65lp/gds/*.gds2)
+export MERGED_LEF = ./platforms/tsmc65lp/merged.lef
+export LIB_FILES  = $(wildcard ./platforms/tsmc65lp/lib/*.lib)
+export GDS_FILES  = $(wildcard ./platforms/tsmc65lp/gds/*.gds2)
 
 export RUN_MACRO_PLACEMENT = 1
 
