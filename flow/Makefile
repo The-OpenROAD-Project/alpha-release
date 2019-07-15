@@ -14,7 +14,7 @@
 
 
 # Default design
-DESIGN_CONFIG ?= ./designs/gcd_nangate45.mk
+DESIGN_CONFIG ?= ./designs/aes_nangate45.mk
 
 
 all: finish
