@@ -11,7 +11,7 @@ make build-tools
 make export-tools
 ```
 
-Once the export is built (in the exports directory), it can be uploaded to the github [releases](https://github.com/The-OpenROAD-Project/CI/releases).
+Once the export is built (in the exports directory), it can be uploaded to the github [releases](https://github.com/The-OpenROAD-Project/alpha-release/releases).
 
 Other interesting make targets
 
