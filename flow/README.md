@@ -14,6 +14,8 @@ cd flow
 
 
 ## Customizing for designs
-The flow runs all of the steps sequentially to achieve Verilog to GDS. There is an initial platform/kit  (e.g. FreePDK45, TSMC65) setup required in order to use the OpenROAD flow. See sample kit setup in the `kits` directory.
+The flow runs all of the steps sequentially to achieve Verilog to GDS. There is an initial platform setup required in order to use the OpenROAD flow. This has already been performed for the FreePDK45, Nangate45 and TSMC65(restricted) platforms. See sample platforms setup in the `platfomrs` directory.
 
 Once the platform is setup. Create a new design configuration with information about the design.  See sample configurations in the `design` directory
+
+Also refer to the [known issues and limitations documents](docs/Known%20Issues%20and%20Limitations.pdf) for information on conditioning your design/files for the flow
