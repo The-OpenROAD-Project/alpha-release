@@ -11,7 +11,7 @@ ENV CC=/opt/rh/devtoolset-6/root/usr/bin/gcc \
     PATH=/opt/rh/devtoolset-6/root/usr/bin:$PATH \
     LD_LIBRARY_PATH=/opt/rh/devtoolset-6/root/usr/lib64:/opt/rh/devtoolset-6/root/usr/lib:/opt/rh/devtoolset-6/root/usr/lib64/dyninst:/opt/rh/devtoolset-6/root/usr/lib/dyninst:/opt/rh/devtoolset-6/root/usr/lib64:/opt/rh/devtoolset-6/root/usr/lib:$LD_LIBRARY_PATH
 
-RUN yum install -y wget git ghostscript glpk-devel
+RUN yum install -y wget git ghostscript glpk-devel bison bison-devel zlib-devel
 
 # Installing newer version of cmake
 RUN wget https://cmake.org/files/v3.9/cmake-3.9.0-Linux-x86_64.sh && \
@@ -31,7 +31,7 @@ RUN mkdir lemon-1.3.1/build  && \
 RUN git clone https://github.com/The-OpenROAD-Project/TritonCTS.git
 
 WORKDIR "TritonCTS"
-RUN make LEMON_HOME=/lemon_build
+RUN ./compileAll.sh /lemon_build $(nproc)
 
 RUN mkdir -p /build/TritonCTS/bin && \
     cp bin/genHtree /build/TritonCTS/bin && \
