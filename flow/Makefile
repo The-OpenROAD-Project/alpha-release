@@ -3,17 +3,17 @@
 # ==============================================================================
 
 # DESIGN_CONFIG = ./designs/gcd_tsmc65lp.mk
-DESIGN_CONFIG = ./designs/gcd_freepdk45.mk
+# DESIGN_CONFIG = ./designs/gcd_freepdk45.mk
 # DESIGN_CONFIG = ./designs/gcd_nangate45.mk
-
 # DESIGN_CONFIG = ./designs/aes_tsmc65lp.mk
-
 # DESIGN_CONFIG = ./designs/jpeg_tsmc65lp.mk
-
 # DESIGN_CONFIG = ./designs/vb_tsmc65lp.mk
+# DESIGN_CONFIG = ./designs/m0_tsmc65lp.mk
+# DESIGN_CONFIG = ./designs/tinyRocket_tsmc65lp.mk
 
-# DESIGN_CONFIG ?= ./designs/m0_tsmc65lp.mk
 
+# Default design
+DESIGN_CONFIG ?= ./designs/gcd_freepdk45.mk
 
 
 all: finish
@@ -155,7 +155,6 @@ $(RESULTS_DIR)/init.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/synth.v
 	  -tracks $(TRACKS_INFO_FILE) \
 	  -def $@ \
 	  2>&1 | tee $(LOG_DIR)/verilog2def.log
-# sed "s/\\\\\[/[/g; s/\\\\\]/]/g"  $@.tmp > $@
 #TODO Update to use utilization
 
 # STEP 2: IO Placement

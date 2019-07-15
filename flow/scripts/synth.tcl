@@ -11,6 +11,7 @@ foreach file $::env(VERILOG_FILES) {
   read_verilog $file
 }
 
+# Mapping required for memory macros
 hierarchy -generate tsmc65lp_* o:Q o:QA o:QB \
                                i:CLK i:CLKA i:CLKB \
                                i:CEN i:CENA i:CENB \
@@ -41,6 +42,9 @@ abc -D [expr $clock * 1000] \
     -constr "$::env(SDC_FILE)" \
     -liberty $::env(OBJECTS_DIR)/merged.lib \
     -script $abc_script
+
+# Splitting nets resolves unwanted compound assign statements ( assign {..} = {..})
+splitnets; opt
 
 opt_clean -purge
 

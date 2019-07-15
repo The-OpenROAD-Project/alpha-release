@@ -4,9 +4,9 @@ export PLATFORM    = tsmc65lp
 export VERILOG_FILES = ./designs/src/gcd/design.v
 export SDC_FILE      = ./designs/src/gcd/design.sdc
 
-export MERGED_LEF = ../../CI/test/testcases/tsmc65lp/tech/tech_macro.lef
-export LIB_FILES  = ../../CI/test/testcases/tsmc65lp/lib/sc12_cln65lp_base_rvt_ss_typical_max_1p08v_125c.lib
-export GDS_FILES  = ../../CI/test/testcases/tsmc65lp/gds/sc12_cln65lp_base_rvt.gds2
+export MERGED_LEF = ./platforms/tsmc65lp/merged.lef
+export LIB_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/lib/*.lib))
+export GDS_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/gds/*.gds2))
 
 export DIE_AREA    = 0.0  0.0  148.0 148.0
 export CORE_AREA   = 14.0 14.0 134.0 134.0

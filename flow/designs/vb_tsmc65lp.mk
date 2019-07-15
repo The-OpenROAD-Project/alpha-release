@@ -5,8 +5,8 @@ export VERILOG_FILES = ./designs/src/vb/design.v
 export SDC_FILE      = ./designs/src/vb/design.sdc
 
 export MERGED_LEF = ./platforms/tsmc65lp/merged.lef
-export LIB_FILES  = $(wildcard ./platforms/tsmc65lp/lib/*.lib)
-export GDS_FILES  = $(wildcard ./platforms/tsmc65lp/gds/*.gds2)
+export LIB_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/lib/*.lib))
+export GDS_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/gds/*.gds2))
 
 export RUN_MACRO_PLACEMENT = 1
 
