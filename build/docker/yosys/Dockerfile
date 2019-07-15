@@ -18,7 +18,7 @@ ENV PATH=/opt/rh/rh-python36/root/usr/bin:$PATH
 
 
 # install other yosys dependencies
-RUN yum install -y flex tcl tcl-devel libffi-devel git graphviz readline-devel
+RUN yum install -y flex tcl tcl-devel libffi-devel git graphviz readline-devel glibc-static
 
 # Updating new bison 3+
 # https://github.com/YosysHQ/yosys/issues/332
@@ -39,7 +39,7 @@ RUN git clone https://github.com/The-OpenROAD-Project/yosys.git yosys
 # build yosys
 WORKDIR yosys
 
-RUN make PREFIX=/build config-gcc
+RUN make PREFIX=/build config-gcc-static-tcl-dynamic
 RUN make PREFIX=/build -j$(nproc)
 RUN make PREFIX=/build install
 
