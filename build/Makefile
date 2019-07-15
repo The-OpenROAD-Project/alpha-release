@@ -69,20 +69,19 @@ build-tools: $(TOOL_BUILD_TARGETS)
 
 TIMESTAMP=$(shell date +"%Y-%m-%d_%H-%M")
 export-tools: $(TOOL_EXPORT_TARGETS) downloads
-	rm -rf export/modules/openroad export/OpenROAD-*
-	mkdir -p export/modules/openroad
+	rm -rf export/openroad
+	mkdir -p export/openroad/modules/openroad
 	for tarFile in $(foreach tool,$(TOOLS),export/$(tool).tar.gz); do \
 	  tar -xzf $$tarFile -C export; \
 	done
 	tar -xzf ../../CI/build/export/utd.tar.gz -C export; \
-	mv export/build export/OpenROAD-$(TIMESTAMP)
-	cp $(DOWNLOAD_DIR)/* export/OpenROAD-$(TIMESTAMP)/bin
-	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./modulefile > export/modules/openroad/$(TIMESTAMP)
-	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./versionfile > export/modules/openroad/.version
-	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./setup.sh > export/setup.sh
+	mv export/build export/openroad/OpenROAD-$(TIMESTAMP)
+	cp $(DOWNLOAD_DIR)/* export/openroad/OpenROAD-$(TIMESTAMP)/bin
+	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./modulefile > export/openroad/modules/openroad/$(TIMESTAMP)
+	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./versionfile > export/openroad/modules/openroad/.version
+	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./setup.sh > export/openroad/setup.sh
 	chmod +x export/setup.sh
-	tar -C export -czf export/OpenROAD-$(TIMESTAMP).tar.gz OpenROAD-$(TIMESTAMP) modules setup.sh \
-		  --transform 's,^,openroad/,'
+	tar -C export -czf export/OpenROAD-$(TIMESTAMP).tar.gz ./openroad
 
 
 
