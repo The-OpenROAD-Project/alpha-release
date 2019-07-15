@@ -36,7 +36,7 @@ $(DOWNLOAD_DIR)/rtGuideGen: FORCE
 # ==============================================================================
 # Build Tools
 # ==============================================================================
-TOOLS = yosys replace magic cts ioplacer pdn opendp resizer route macroplacer
+TOOLS = yosys tapcell replace magic cts ioplacer pdn opendp resizer route macroplacer
 
 TOOL_BUILD_TARGETS = $(foreach tool,$(TOOLS),build-$(tool))
 TOOL_RUN_TARGETS = $(foreach tool,$(TOOLS),run-$(tool))

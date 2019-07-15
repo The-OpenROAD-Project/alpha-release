@@ -15,9 +15,9 @@ echo "OPENROAD: ${OPENROAD}"
 
 
 if [ -n "${PATH}" ]; then
-  export PATH=${modroot}/bin:${modroot}/bin/Linux-x86_64:$PATH
+  export PATH=${modroot}/bin:${modroot}/bin/Linux-x86_64:${modroot}/pdn/scripts:$PATH
 else
-  export PATH=${modroot}/bin:${modroot}/bin/Linux-x86_64
+  export PATH=${modroot}/bin:${modroot}/bin/Linux-x86_64:${modroot}/pdn/scripts
 fi
 
 if [ -n "${LD_LIBRARY_PATH}" ]; then
@@ -30,4 +30,10 @@ if [ -n "${MANPATH}" ]; then
   export MANPATH=${modroot}/share/man:$MANPATH
 else
   export MANPATH=${modroot}/share/man
+fi
+
+if [ -n "${TCLLIBPATH}" ]; then
+  export TCLLIBPATH=${modroot}/pdn/scripts:$TCLLIBPATH
+else
+  export TCLLIBPATH=${modroot}/pdn/scripts
 fi
