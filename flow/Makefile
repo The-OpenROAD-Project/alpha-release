@@ -60,11 +60,8 @@ $(TECH_DIR)/merged.lef: $(MERGED_LEF)
 $(TECH_DIR)/merged_padded.lef: $(TECH_DIR)/merged.lef
 	$(SCRIPTS_DIR)/padLefMacro.py -p $(CELL_PAD_IN_MICRON) -i $< -o $@
 
-$(TECH_DIR)/merged_padded_dummy.lef: $(TECH_DIR)/merged_padded.lef
-	$(SCRIPTS_DIR)/addDummyToLef.py -r $(CTS_DUMMY_CELL) -i $< -o $@
-
 # Modify lef files for TritonRoute
-$(TECH_DIR)/merged_padded_dummy_spacing.lef: $(TECH_DIR)/merged_padded_dummy.lef
+$(TECH_DIR)/merged_padded_spacing.lef: $(TECH_DIR)/merged_padded.lef
 	$(SCRIPTS_DIR)/modifyLefSpacing.py -i $< -o $@
 
 # Pre-process libraries
@@ -183,7 +180,9 @@ $(RESULTS_DIR)/init_macro.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/init
 	    -output $(DESIGN_NAME) \
 	    -globalConfig $(IP_GLOBAL_CFG) \
 	    -depth 3 \
+	    -plot \
 	    -westFix \
+	    -randomPlace \
 	    | tee $(LOG_DIR)/fplan.log
 	    mv $(DESIGN_NAME)_best.def $@
 else
@@ -272,7 +271,7 @@ $(RESULTS_DIR)/place_gp_resized.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/place
 $(RESULTS_DIR)/place.v: $(RESULTS_DIR)/place_gp_resized.def
 
 
-# STEP 3: Global placement
+# STEP 3: Detail placement
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/place.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/place_gp_resized.def
 	opendp -lef $(TECH_DIR)/merged_padded.lef \
@@ -306,9 +305,9 @@ cts: $(RESULTS_DIR)/cts.def \
 # ------------------------------------------------------------------------------
 SKEW  = 50
 TOLER = 1000
-$(OBJECTS_DIR)/tritonCts.config: $(TECH_DIR)/merged_padded_dummy.lef $(RESULTS_DIR)/place.def
+$(OBJECTS_DIR)/tritonCts.config: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/place.def
 	mkdir -p $(OBJECTS_DIR)
-	echo "lef $(TECH_DIR)/merged_padded_dummy.lef" >> $@
+	echo "lef $(TECH_DIR)/merged_padded.lef" >> $@
 	echo "path $(RESULTS_DIR)/place.def" >> $@
 	echo "verilog $(RESULTS_DIR)/place.v" >> $@
 	echo "design $(DESIGN_NAME)" >> $@
@@ -361,7 +360,7 @@ route: $(RESULTS_DIR)/route.def \
 
 # STEP 1: Run global route
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/route.guide: $(TECH_DIR)/merged_padded_dummy.lef $(RESULTS_DIR)/cts.def
+$(RESULTS_DIR)/route.guide: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/cts.def
 	@$(FIGLET_CMD) ROUTING
 	rm -rf ./output ./$(DESIGN_NAME).*
 	utdBoxRouter -do $(SCRIPTS_DIR)/boxRouter.tcl $(DESIGN_NAME) 2>&1 | tee $(LOG_DIR)/utdBoxRouter.log
@@ -376,8 +375,8 @@ $(RESULTS_DIR)/route.guide: $(TECH_DIR)/merged_padded_dummy.lef $(RESULTS_DIR)/c
 
 # Generate param file for TritonRoute
 #-------------------------------------------------------------------------------
-$(OBJECTS_DIR)/TritonRoute.param: $(TECH_DIR)/merged_padded_dummy_spacing.lef $(RESULTS_DIR)/cts.def $(RESULTS_DIR)/route.guide
-	echo "lef:$(TECH_DIR)/merged_padded_dummy_spacing.lef" > $@
+$(OBJECTS_DIR)/TritonRoute.param: $(TECH_DIR)/merged_padded_spacing.lef $(RESULTS_DIR)/cts.def $(RESULTS_DIR)/route.guide
+	echo "lef:$(TECH_DIR)/merged_padded_spacing.lef" > $@
 	echo "def:$(RESULTS_DIR)/cts.def" >> $@
 	echo "guide:$(RESULTS_DIR)/route.guide" >> $@
 	echo "output:$(RESULTS_DIR)/route.def" >> $@

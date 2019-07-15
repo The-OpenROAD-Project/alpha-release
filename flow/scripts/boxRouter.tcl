@@ -1,4 +1,4 @@
-orparam lef $::env(TECH_DIR)/merged_padded_dummy.lef
+orparam lef $::env(TECH_DIR)/merged_padded.lef
 orparam def $::env(RESULTS_DIR)/cts.def
 
 # orparam gcell origin {0 0}
