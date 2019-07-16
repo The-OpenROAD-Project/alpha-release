@@ -5,7 +5,7 @@ The build framework has a dependency on docker. You will need docker Docker 18.0
 
 Run the following commands to build an export
 ```bash
-git clone git@github.com:The-OpenROAD-Project/CI.git
+git clone git@github.com:The-OpenROAD-Project/alpha-release.git
 cd build
 make build-tools
 make export-tools
