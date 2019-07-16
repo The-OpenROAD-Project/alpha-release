@@ -43,11 +43,16 @@ export TECH_DIR    = ./tech/$(DESIGN_NAME)
 
 # Tool Options
 SHELL = /bin/bash -o pipefail
-export FIGLET_CMD = date ; figlet -c -p -d $(OPENROAD)/figlet/fonts/
+BANNER = printf "\e[31m" ; \
+         date ; \
+         figlet -c -p -d $(OPENROAD)/figlet/fonts/ $(1) ; \
+         printf "\e[0m" ; \
+         sleep 1 ;
+
 
 # Quick check to make sure OpenROAD tools are installed
 ifeq ("$(OPENROAD)","")
-  $(error ERROR: These tests require the OpenROAD tools to be setup (using module load openroad).)
+  $(error ERROR: These tests require the OpenROAD tools to be setup.)
 endif
 
 
@@ -108,7 +113,7 @@ synth: $(RESULTS_DIR)/synth.v \
 # Run Synthesis using yosys
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/synth.yosys.v:  $(OBJECTS_DIR)/merged.lib
-	@$(FIGLET_CMD) SYNTHESIS
+	@$(call BANNER, SYNTHESIS)
 	mkdir -p $(RESULTS_DIR) $(LOG_DIR) $(REPORTS_DIR)
 	yosys -l $(LOG_DIR)/synth.log -c scripts/synth.tcl
 
@@ -140,7 +145,7 @@ floorplan: $(RESULTS_DIR)/floorplan.def \
 #-------------------------------------------------------------------------------
 
 $(RESULTS_DIR)/init.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/synth.v
-	@$(FIGLET_CMD) FLOORPLAN
+	@$(call BANNER, FLOORPLAN)
 	verilog2def \
 	  -lef $(TECH_DIR)/merged.lef \
 	  $(foreach file,$(LIB_FILES),-liberty $(file)) \
@@ -233,7 +238,7 @@ place: $(RESULTS_DIR)/place.def \
 # STEP 1: Global placement
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/place_gp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/floorplan.def $(RESULTS_DIR)/floorplan.v $(RESULTS_DIR)/floorplan.sdc| ./PORT9.dat ./POST9.dat ./POWV9.dat
-	@$(FIGLET_CMD) PLACE
+	@$(call BANNER, PLACE)
 	rm -rf $(RESULTS_DIR)/etc/
 	RePlAce -bmflag etc \
 	        -lef $(TECH_DIR)/merged_padded.lef \
@@ -263,8 +268,7 @@ $(RESULTS_DIR)/replace.gif: $(RESULTS_DIR)/place_gp.def
 # STEP 2: Resizing & Buffering
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/place_gp_resized.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/place_gp.def $(RESULTS_DIR)/floorplan.sdc | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
-	resizer -no_init \
-	        $(SCRIPTS_DIR)/resize.tcl \
+	gdb resizer $(SCRIPTS_DIR)/resize.tcl \
 	        2>&1 | tee $(LOG_DIR)/resizer.log
 	# @! grep --color "Error:" $(LOG_DIR)/resizer.log
 
@@ -324,7 +328,7 @@ $(OBJECTS_DIR)/tritonCts.config: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/pl
 # Run TritonCTS
 # ------------------------------------------------------------------------------
 $(RESULTS_DIR)/cts.v: $(OBJECTS_DIR)/tritonCts.config | ./PORT9.dat ./POST9.dat ./POWV9.dat
-	@$(FIGLET_CMD) CTS
+	@$(call BANNER, CTS)
 	$(OPENROAD)/TritonCTS/runTritonCTS.tcl \
 	  -configFilePath=$< \
 	  -scriptsPath=$(OPENROAD)/TritonCTS/scripts \
@@ -361,7 +365,7 @@ route: $(RESULTS_DIR)/route.def \
 # STEP 1: Run global route
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/route.guide: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/cts.def
-	@$(FIGLET_CMD) ROUTING
+	@$(call BANNER, ROUTING)
 	rm -rf ./output ./$(DESIGN_NAME).*
 	utdBoxRouter -do $(SCRIPTS_DIR)/boxRouter.tcl $(DESIGN_NAME) 2>&1 | tee $(LOG_DIR)/utdBoxRouter.log
 	mv ./output/* $(RESULTS_DIR)
@@ -420,7 +424,7 @@ finish: $(RESULTS_DIR)/finish.gds
 # Run magic
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/finish.gds: $(MAGIC_TECH_FILE) $(GDS_FILES) $(RESULTS_DIR)/route.def
-	@$(FIGLET_CMD) FINISHING
+	@$(call BANNER, FINISHING)
 	magic -dnull -noconsole -T $(MAGIC_TECH_FILE) \
 	      $(SCRIPTS_DIR)/magic.tcl | tee $(LOG_DIR)/magic.log
 
