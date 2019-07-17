@@ -23,7 +23,8 @@ Other interesting make targets
 - `make export-tools` This will create a tar.gz export of all tools
 
 ## Installing Builds
-The builds can be installed to any Redhat 6/7 based machine. Download a build (`OpenROAD-XXXX-XX-XX_XX-XX.tar.gz`) from the [release](https://github.com/The-OpenROAD-Project/alpha-release/releases) tab and perform the following steps to install.
+The builds can be installed to any Redhad 6 based machine. We recommend using CentOS 6.10-minimal to run a build.
+Download a build (`OpenROAD-XXXX-XX-XX_XX-XX.tar.gz`) from the [release](https://github.com/The-OpenROAD-Project/alpha-release/releases) tab and perform the following steps to install.
 
 ### Prerequisites on run system
 1. Python3
