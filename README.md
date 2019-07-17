@@ -6,6 +6,8 @@ The IDEA program targets no-human-in-loop (NHIL) design, with 24-hour turnaround
 
 
 ## Build
+:warning: At this time, we are currently recommending the use of precompiled binaries for Centos 6/7. See [README on installing builds](build#installing-builds)
+
 See the build [README](build#creating-builds) on how to build and assembling all of the OpenROAD tools into a package.
 
 ## Install
