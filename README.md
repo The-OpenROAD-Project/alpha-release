@@ -8,9 +8,9 @@ For a technical description of the OpenROAD flow, please refer to our DAC paper:
 
 
 ## Build
-:warning: At this time, we are currently recommending the use of precompiled binaries for Centos 6. See [README on installing builds](build#installing-builds)
+:warning: At this time, we are currently recommending the use of precompiled binaries for Centos 6.
 
-See the build [README](build#creating-builds) on how to build and assembling all of the OpenROAD tools into a package.
+See [README](build#installing-builds) on installing builds and assembling all of the OpenROAD tools into a package.
 
 ## Install
 See instructions in the build [README](build#installing-builds) on how to install a pre-compiled package unto a Linux system
