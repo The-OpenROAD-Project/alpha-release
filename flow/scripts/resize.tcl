@@ -23,7 +23,11 @@ foreach cell $::env(DONT_USE_CELLS) {
   set dont_use_cells "$dont_use_cells [get_full_name [get_lib_cells */$cell]]"
 }
 
-resize -buffer_cell [get_full_name [get_lib_cells */$::env(RESIZER_BUF_CELL)]] \
+# resize -buffer_cell [get_full_name [get_lib_cells */$::env(RESIZER_BUF_CELL)]] \
+#        -dont_use $dont_use_cells
+
+resize -resize -repair_max_cap -repair_max_slew \
+       -buffer_cell [get_full_name [get_lib_cells */$::env(RESIZER_BUF_CELL)]] \
        -dont_use $dont_use_cells
 
 # final report

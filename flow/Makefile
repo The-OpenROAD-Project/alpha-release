@@ -9,12 +9,11 @@
 # DESIGN_CONFIG = ./designs/aes_nangate45.mk
 # DESIGN_CONFIG = ./designs/jpeg_tsmc65lp.mk
 # DESIGN_CONFIG = ./designs/vb_tsmc65lp.mk
-# DESIGN_CONFIG = ./designs/m0_tsmc65lp.mk
 # DESIGN_CONFIG = ./designs/tinyRocket_tsmc65lp.mk
 
 
 # Default design
-DESIGN_CONFIG ?= ./designs/aes_nangate45.mk
+DESIGN_CONFIG ?= ./designs/gcd_nangate45.mk
 
 
 all: finish
@@ -158,6 +157,7 @@ $(RESULTS_DIR)/init.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/synth.v
 	  -tracks $(TRACKS_INFO_FILE) \
 	  -def $@ \
 	  2>&1 | tee $(LOG_DIR)/verilog2def.log
+	sed -i 's/VERSION 5.5/VERSION 5.6/' $@
 #TODO Update to use utilization
 
 # STEP 2: IO Placement
@@ -171,15 +171,43 @@ $(RESULTS_DIR)/init_io.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/init.def
 	         -w 1 \
 	         2>&1 | tee $(LOG_DIR)/ioPlacer.log
 
-# STEP 3: Macro Placement
-#-------------------------------------------------------------------------------
+# STEP 3: Timing Driven Mixed Sized Placement
 # Only run if required
+#-------------------------------------------------------------------------------
+$(RESULTS_DIR)/init_tdms.def: $(RESULTS_DIR)/init_io.def $(RESULTS_DIR)/synth.v $(RESULTS_DIR)/synth.sdc $(LIB_FILES) $(TECH_DIR)/merged_padded.lef | ./PORT9.dat ./POST9.dat ./POWV9.dat
 ifeq ($(RUN_MACRO_PLACEMENT),1)
-$(RESULTS_DIR)/init_macro.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/init_io.def $(RESULTS_DIR)/synth.v $(RESULTS_DIR)/synth.sdc $(IP_GLOBAL_CFG)
+	RePlAce \
+	  -bmflag etc \
+	  -lef $(TECH_DIR)/merged_padded.lef \
+	  -def $(RESULTS_DIR)/init_io.def  \
+	  -verilog $(RESULTS_DIR)/synth.v \
+	  $(foreach file,$(LIB_FILES),-lib $(file)) \
+	  -sdc $(RESULTS_DIR)/synth.sdc \
+	  -output $(RESULTS_DIR)/td-ms-replace \
+	  -t 1 \
+	  -timing \
+	  -resPerMicron $(RES_PER_MICRON) \
+	  -capPerMicron $(CAP_PER_MICRON) \
+	  -skipIP \
+	  -plot \
+	  -experi output \
+	  -den 0.7 \
+	  -onlyGP \
+	  2>&1 | tee $(LOG_DIR)/TD-MS-RePlAce.log
+	cp $(RESULTS_DIR)/td-ms-replace/etc/init_io/output/init_io_final.def $@
+else
+	cp $< $@
+endif
+
+# STEP 4: Macro Placement
+# Only run if required
+#-------------------------------------------------------------------------------
+$(RESULTS_DIR)/init_macro.def: $(RESULTS_DIR)/init_tdms.def $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/synth.v $(RESULTS_DIR)/synth.sdc $(IP_GLOBAL_CFG)
+ifeq ($(RUN_MACRO_PLACEMENT),1)
 	fplan $(foreach file,$(LIB_FILES),-lib $(file)) \
 	    -verilog $(RESULTS_DIR)/synth.v \
 	    -lef $(TECH_DIR)/merged_padded.lef \
-	    -def $(RESULTS_DIR)/init_io.def \
+	    -def $(RESULTS_DIR)/init_tdms.def \
 	    -design $(DESIGN_NAME) \
 	    -sdc $(RESULTS_DIR)/synth.sdc \
 	    -output $(DESIGN_NAME) \
@@ -191,21 +219,26 @@ $(RESULTS_DIR)/init_macro.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/init
 	    | tee $(LOG_DIR)/fplan.log
 	    mv $(DESIGN_NAME)_best.def $@
 else
-$(RESULTS_DIR)/init_macro.def: $(RESULTS_DIR)/init_io.def
 	cp $< $@
 endif
 
 # STEP 4: PDN generation
 #-------------------------------------------------------------------------------
-
+$(RESULTS_DIR)/init_pdn.def: $(RESULTS_DIR)/init_macro.def
+ifneq ($(PDN_CFG),)
+	apply_pdn $(PDN_CFG)
+	mv $(DESIGN_NAME)_post_T8.def $@
+else
+	cp $< $@
+endif
 
 
 # STEP 5: Tapcell and Welltie insertion
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/floorplan.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/init_macro.def
-	cp $(RESULTS_DIR)/init_macro.def $@
+$(RESULTS_DIR)/floorplan.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/init_pdn.def
+	cp $(RESULTS_DIR)/init_pdn.def $@
 	tapcell -lef $(TECH_DIR)/merged.lef \
-	        -def $(RESULTS_DIR)/init_macro.def \
+	        -def $(RESULTS_DIR)/init_pdn.def \
 	        -rule $(WELLTTAP_RULE) \
 	        -welltap $(WELLTIE_CELL) \
 	        -endcap $(ENDCAP_CELL) \
@@ -237,7 +270,7 @@ place: $(RESULTS_DIR)/place.def \
 
 # STEP 1: Global placement
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/place_gp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/floorplan.def $(RESULTS_DIR)/floorplan.v $(RESULTS_DIR)/floorplan.sdc| ./PORT9.dat ./POST9.dat ./POWV9.dat
+$(RESULTS_DIR)/place_gp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/floorplan.def $(RESULTS_DIR)/floorplan.v $(RESULTS_DIR)/floorplan.sdc | ./PORT9.dat ./POST9.dat ./POWV9.dat
 	@$(call BANNER, PLACE)
 	rm -rf $(RESULTS_DIR)/etc/
 	RePlAce -bmflag etc \
@@ -246,7 +279,7 @@ $(RESULTS_DIR)/place_gp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/floorp
 	        -verilog $(RESULTS_DIR)/floorplan.v \
 	        $(foreach file,$(LIB_FILES),-lib $(file)) \
 	        -sdc $(RESULTS_DIR)/floorplan.sdc \
-	        -output $(RESULTS_DIR) \
+	        -output $(RESULTS_DIR)/replace \
 	        -t 1 \
 	        -timing \
 	        -resPerMicron $(RES_PER_MICRON) \
@@ -258,17 +291,17 @@ $(RESULTS_DIR)/place_gp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/floorp
 	        -initCoef 0.00002 \
 	        -onlyGP \
 	        2>&1 | tee $(LOG_DIR)/RePlAce.log
-	cp $(RESULTS_DIR)/etc/floorplan/output/floorplan_final.def $@
+	cp $(RESULTS_DIR)/replace/etc/floorplan/output/floorplan_final.def $@
 
 $(RESULTS_DIR)/replace.gif: $(RESULTS_DIR)/place_gp.def
-	convert -delay 20  $(RESULTS_DIR)/etc/floorplan/output/cell/cGP2D*.jpg \
-	        -delay 100 $(RESULTS_DIR)/etc/floorplan/output/globalPlaceResult.jpg \
+	convert -delay 20  $(RESULTS_DIR)/replace/etc/floorplan/output/cell/cGP2D*.jpg \
+	        -delay 100 $(RESULTS_DIR)/replace/etc/floorplan/output/globalPlaceResult.jpg \
 	        $@
 
 # STEP 2: Resizing & Buffering
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/place_gp_resized.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/place_gp.def $(RESULTS_DIR)/floorplan.sdc | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
-	gdb resizer $(SCRIPTS_DIR)/resize.tcl \
+	resizer $(SCRIPTS_DIR)/resize.tcl \
 	        2>&1 | tee $(LOG_DIR)/resizer.log
 	# @! grep --color "Error:" $(LOG_DIR)/resizer.log
 

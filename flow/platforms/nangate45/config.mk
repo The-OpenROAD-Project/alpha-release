@@ -25,6 +25,6 @@ export CAP_PER_METER    = 0.36e-9
 export RES_PER_METER    = 0.1233e+6
 export RESIZER_BUF_CELL = BUF_X4
 
-export MAGIC_TECH_FILE = ./platforms/freepdk45/gscl45nm.tech
+export MAGIC_TECH_FILE = ./platforms/nangate45/magic.tech
 
 export DONT_USE_CELLS = FILLCELL_X1

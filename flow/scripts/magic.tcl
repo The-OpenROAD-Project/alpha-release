@@ -1,4 +1,9 @@
-scalegrid 1 10
+if {$::env(PLATFORM) == "tsmc65lp"} {
+  scalegrid 1 10
+} else {
+  scalegrid 1 5
+}
+
 box 0 0 0 0
 drc off
 snap int
