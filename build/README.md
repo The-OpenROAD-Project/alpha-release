@@ -27,10 +27,10 @@ The builds can be installed to any Redhad 6 based machine. We recommend using Ce
 Download a build (`OpenROAD-XXXX-XX-XX_XX-XX.tar.gz`) from the [release](https://github.com/The-OpenROAD-Project/alpha-release/releases) tab and perform the following steps to install.
 
 ### Prerequisites on run system
-1. Python3
+1. Python3 (and the following libraries: queuelib, matplotlib)
 1. tcl8.5 & tk8.5
 1. libreadline6 for yosys
-1. libffi.so.5
+1. libffi.so.5 for yosys
 
 ### Install procedure
 ```
