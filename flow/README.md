@@ -6,7 +6,7 @@
 1. Clone the repository
 ```
 git clone https://github.com/The-OpenROAD-Project/alpha-release
-cd flow
+cd alpha-release/flow
 ```
 2. An OpenROAD release must be setup to run the tests. More info in the build [README](../build/README.md)
 3. Update the top of the Makefile to point to a design configuration file. Sample desgin configurations are available in the `designs` directory.
