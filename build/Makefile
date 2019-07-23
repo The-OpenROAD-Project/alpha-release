@@ -36,7 +36,7 @@ $(DOWNLOAD_DIR)/rtGuideGen: FORCE
 # ==============================================================================
 # Build Tools
 # ==============================================================================
-TOOLS = yosys replace magic cts ioplacer pdn opendp resizer route macroplacer
+TOOLS = yosys tapcell replace magic cts ioplacer pdn opendp resizer route macroplacer
 
 TOOL_BUILD_TARGETS = $(foreach tool,$(TOOLS),build-$(tool))
 TOOL_RUN_TARGETS = $(foreach tool,$(TOOLS),run-$(tool))
@@ -80,9 +80,19 @@ export-tools: $(TOOL_EXPORT_TARGETS) downloads
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./modulefile > export/openroad/modules/openroad/$(TIMESTAMP)
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./versionfile > export/openroad/modules/openroad/.version
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./setup.sh > export/openroad/setup.sh
-	chmod +x export/setup.sh
+	chmod +x export/openroad/setup.sh
 	tar -C export -czf export/OpenROAD-$(TIMESTAMP).tar.gz ./openroad
 
+
+run-image: run/Dockerfile
+	export DOCKER_BUILDKIT=1; docker build $(DOCKER_BUILD_OPTS) -t $@ run | tee logs/docker/$@.build.txt
+
+export-tools-docker: export-tools run-image
+	docker run \
+		-it \
+		--mount type=bind,source=$(CURDIR)/export/openroad,target=/openroad \
+		--mount type=bind,source=$(CURDIR)/../flow,target=/flow \
+		run-image
 
 
 # NOTE: This does not clean the docker images
