@@ -69,7 +69,7 @@ build-tools: $(TOOL_BUILD_TARGETS)
 
 TIMESTAMP=$(shell date +"%Y-%m-%d_%H-%M")
 export-tools: $(TOOL_EXPORT_TARGETS) downloads
-	rm -rf export/openroad
+	rm -rf export/openroad export/OpenROAD*.tar.gz
 	mkdir -p export/openroad/modules/openroad
 	for tarFile in $(foreach tool,$(TOOLS),export/$(tool).tar.gz); do \
 	  tar -xzf $$tarFile -C export; \
