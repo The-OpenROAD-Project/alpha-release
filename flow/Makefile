@@ -2,14 +2,27 @@
 # Uncomment or add the design to run
 # ==============================================================================
 
-# DESIGN_CONFIG = ./designs/gcd_tsmc65lp.mk
-# DESIGN_CONFIG = ./designs/gcd_freepdk45.mk
-# DESIGN_CONFIG = ./designs/gcd_nangate45.mk
-# DESIGN_CONFIG = ./designs/aes_tsmc65lp.mk
-# DESIGN_CONFIG = ./designs/aes_nangate45.mk
-# DESIGN_CONFIG = ./designs/jpeg_tsmc65lp.mk
-# DESIGN_CONFIG = ./designs/vb_tsmc65lp.mk
-# DESIGN_CONFIG = ./designs/tinyRocket_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/gcd_freepdk45.mk
+
+# DESIGN_CONFIG=./designs/aes_nangate45.mk
+# DESIGN_CONFIG=./designs/dynamic_node_nangate45.mk
+# DESIGN_CONFIG=./designs/gcd_nangate45.mk
+# DESIGN_CONFIG=./designs/ibex_nangate45.mk
+
+# DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/ariane_tsmc65lp.mk
+DESIGN_CONFIG=./designs/bp_fe_top_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/coyote_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/dynamic_node_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/fasoc_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/gcd_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/ibex_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/jpeg_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/swerv_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/swerv_wrapper_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/tinyRocket_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/vb_tsmc65lp.mk
+
 
 
 # Default design
@@ -168,7 +181,9 @@ $(RESULTS_DIR)/init_io.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/init.def
 	         --output $@ \
 	         --hmetal 5 \
 	         --vmetal 6 \
-	         -w 1 \
+	         --random 1 \
+	         --force-spread 1 \
+	         --wirelen 1 \
 	         2>&1 | tee $(LOG_DIR)/ioPlacer.log
 
 # STEP 3: Timing Driven Mixed Sized Placement
@@ -215,7 +230,6 @@ ifeq ($(RUN_MACRO_PLACEMENT),1)
 	    -depth 3 \
 	    -plot \
 	    -westFix \
-	    -randomPlace \
 	    | tee $(LOG_DIR)/fplan.log
 	    mv $(DESIGN_NAME)_best.def $@
 else
@@ -379,6 +393,7 @@ $(RESULTS_DIR)/cts.sdc: $(RESULTS_DIR)/place.sdc
 	cp $< $@
 
 clean_cts:
+	rm -rf $(OBJECTS_DIR)/tritonCts.config
 	rm -rf $(RESULTS_DIR)/cts.def $(RESULTS_DIR)/cts.v $(RESULTS_DIR)/cts.sdc
 
 
@@ -470,8 +485,10 @@ clean_finish:
 # This cleans all designs + tech
 clean_all: clean_synth clean_floorplan clean_place clean_cts clean_route clean_finish
 	rm -rf ./results ./logs ./reports ./objects ./tech
-	rm -rf POST9.dat PORT9.dat POWV9.dat
+	rm -rf ./POST9.dat ./PORT9.dat ./POWV9.dat
 	rm -rf ../etc/POST9.dat ../etc/PORT9.dat ../etc/POWV9.dat
+	rm -rf layer_*.mps macrocell.list *best.plt *_pdn.def dummy.guide run.param
+	rm -rf *.rpt *.def.v innovus.*
 
 
 # ==============================================================================

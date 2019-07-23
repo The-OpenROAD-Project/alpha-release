@@ -3,7 +3,7 @@ yosys -import
 # Don't change these unless you know what you are doing
 set stat_ext    "_stat.rep"
 set gl_ext      "_gl.v"
-set abc_script  "+read_constr,$::env(SDC_FILE);strash;ifraig;retime,-D,{D},-M,6;strash;dch,-f;map,-p,-M,1,{D},-f;dnsize;buffer,-p;upsize;"
+set abc_script  "+read_constr,$::env(SDC_FILE);strash;ifraig;retime,-D,{D},-M,6;strash;dch,-f;map,-p,-M,1,{D},-f;topo;dnsize;buffer,-p;upsize;"
 
 
 # read verilog files
@@ -44,7 +44,8 @@ abc -D [expr $clock * 1000] \
     -script $abc_script
 
 # Splitting nets resolves unwanted compound assign statements ( assign {..} = {..})
-splitnets; opt
+splitnets -ports; opt
+hilomap -hicell {*}$::env(TIEHI_CELL_AND_PORT) -locell {*}$::env(TIELO_CELL_AND_PORT)
 
 opt_clean -purge
 

@@ -26,7 +26,13 @@ foreach cell $::env(DONT_USE_CELLS) {
 # resize -buffer_cell [get_full_name [get_lib_cells */$::env(RESIZER_BUF_CELL)]] \
 #        -dont_use $dont_use_cells
 
-resize -resize -repair_max_cap -repair_max_slew \
+# DISABLED input/output buffering due to issues in CTS detail routing
+# resize -resize -repair_max_cap -repair_max_slew \
+#        -buffer_cell [get_full_name [get_lib_cells */$::env(RESIZER_BUF_CELL)]] \
+#        -dont_use $dont_use_cells
+
+# DISABLED repair max slew due to crashes running some designs
+resize -resize -repair_max_cap  \
        -buffer_cell [get_full_name [get_lib_cells */$::env(RESIZER_BUF_CELL)]] \
        -dont_use $dont_use_cells
 
