@@ -11,7 +11,7 @@
 
 # DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/ariane_tsmc65lp.mk
-DESIGN_CONFIG=./designs/bp_fe_top_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/bp_fe_top_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/coyote_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/dynamic_node_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/fasoc_tsmc65lp.mk
