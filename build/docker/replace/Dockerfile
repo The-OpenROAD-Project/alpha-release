@@ -23,7 +23,7 @@ RUN yum install -y wget libstdc++-devel libstdc++-static libX11-devel \
 RUN yum install -y yum-utils
 RUN yum-config-manager --add-repo https://yum.repos.intel.com/setup/intelproducts.repo && \
     rpm --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB && \
-    yum install -y intel-mkl-2018.2-046 intel-ipp-2018.4-057
+    yum install -y intel-mkl-2018.2-046 
 
 # download public key for github.com
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
