@@ -5,7 +5,7 @@ The build framework has a dependency on docker. You will need docker Docker 18.0
 
 Run the following commands to build an export
 ```bash
-git clone git@github.com:The-OpenROAD-Project/CI.git
+git clone git@github.com:The-OpenROAD-Project/alpha-release.git
 cd build
 make build-tools
 make export-tools
@@ -19,6 +19,26 @@ Other interesting make targets
 - `make run-%` This will run the specified tool image with a `$USER` session inside the image
 - `make runasroot-%` This will run the specified tool image with a root session inside the image
 - `make export-tools` This will create a tar.gz export of all tools
+
+## Builds test
+To ease use, we support a simple docker image.
+```bash
+git clone git@github.com:The-OpenROAD-Project/alpha-release.git
+cd build
+make build-tools
+make export-tools-docker
+```
+- `make export-tools-docker` This will build a docker image for test and generate a new docker container to test the compiled binaries.
+
+The `make export-tools-docker` will generate a new bash shell that a user can test.
+Type below commands to test your compiled binaries in a docker shell.
+```scl enable rh-python35 bash
+source /openroad/setenv.sh
+cd /flow/
+make clean_all
+make
+```
+
 
 ## Installing Builds
 The builds can be installed to any Redhat 6/7 based machine. Download a build (`OpenROAD-XXXX-XX-XX_XX-XX.tar.gz`) from the [release](https://github.com/The-OpenROAD-Project/alpha-release/releases) tab and perform the following steps to install.
