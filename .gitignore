@@ -1,5 +1,6 @@
 # Build working directories
-build/export
+build/export/*
+!build/export/Dockerfile
 build/logs
 
 # Test working directories
@@ -42,7 +43,7 @@ flow/*.opennet
 
 # TSMC65 LP
 flow/platforms/tsmc65lp/
-
+*m0*
 
 flow/parallel*
 

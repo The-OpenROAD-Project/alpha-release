@@ -18,7 +18,7 @@ DOCKER_RUN_OPTS ?= -it \
 # ==============================================================================
 DOWNLOAD_DIR = export/downloads
 
-downloads: $(DOWNLOAD_DIR)/grChecker $(DOWNLOAD_DIR)/rtGuideGen
+downloads: $(DOWNLOAD_DIR)/grChecker $(DOWNLOAD_DIR)/rtGuideGen $(DOWNLOAD_DIR)/utd.tar.gz
 
 FORCE:
 
@@ -32,21 +32,33 @@ $(DOWNLOAD_DIR)/rtGuideGen: FORCE
 	wget https://vlsicad.ucsd.edu/~bangqixu/toTutu/routeguide_gen/FlexRoute -O $@
 	chmod +x $@
 
+$(DOWNLOAD_DIR)/utd.tar.gz: FORCE
+	mkdir -p $(DOWNLOAD_DIR)
+	wget https://vlsicad.ucsd.edu/~mgwoo/openroad/utd.tar.gz -O $@
+	chmod +x $@
+
 
 # ==============================================================================
 # Build Tools
 # ==============================================================================
-TOOLS = yosys tapcell replace magic cts ioplacer pdn opendp resizer route macroplacer
+TOOLS = yosys tapcell replace magic cts ioplacer pdn opendp resizer route macroplacer fastroute
 
 TOOL_BUILD_TARGETS = $(foreach tool,$(TOOLS),build-$(tool))
-TOOL_RUN_TARGETS = $(foreach tool,$(TOOLS),run-$(tool))
-TOOL_RUNASROOT_TARGETS = $(foreach tool,$(TOOLS),runasroot-$(tool))
+TOOL_RUN_TARGETS = $(foreach tool,$(TOOLS),run-$(tool)) run-final
+TOOL_RUNASROOT_TARGETS = $(foreach tool,$(TOOLS),runasroot-$(tool)) runasroot-final
 TOOL_EXPORT_TARGETS = $(foreach tool,$(TOOLS),export-$(tool))
 
 
 $(TOOL_BUILD_TARGETS): build-% : ./docker/%/Dockerfile
 	mkdir -p logs/docker
 	export DOCKER_BUILDKIT=1; docker build $(DOCKER_BUILD_OPTS) -t $* docker/$* | tee logs/docker/$*.build.txt
+
+
+build-final: build-% : ./export/Dockerfile
+	mkdir -p logs/docker
+	export DOCKER_BUILDKIT=1; \
+	  VERSION=$(subst .tar.gz,,$(subst export/OpenROAD-,,$(wildcard export/OpenROAD-*.tar.gz))); \
+	  docker build $(DOCKER_BUILD_OPTS) --build-arg VERSION=$$VERSION -t $* ./export | tee logs/docker/$*.build.txt
 
 $(TOOL_RUN_TARGETS): run-% :
 	docker run $(DOCKER_RUN_OPTS) $*
@@ -74,7 +86,7 @@ export-tools: $(TOOL_EXPORT_TARGETS) downloads
 	for tarFile in $(foreach tool,$(TOOLS),export/$(tool).tar.gz); do \
 	  tar -xzf $$tarFile -C export; \
 	done
-	tar -xzf ../../CI/build/export/utd.tar.gz -C export; \
+	tar -xzf $(DOWNLOAD_DIR)/utd.tar.gz -C export; \
 	mv export/build export/openroad/OpenROAD-$(TIMESTAMP)
 	cp $(DOWNLOAD_DIR)/* export/openroad/OpenROAD-$(TIMESTAMP)/bin
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./modulefile > export/openroad/modules/openroad/$(TIMESTAMP)
@@ -82,17 +94,6 @@ export-tools: $(TOOL_EXPORT_TARGETS) downloads
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./setup.sh > export/openroad/setup.sh
 	chmod +x export/openroad/setup.sh
 	tar -C export -czf export/OpenROAD-$(TIMESTAMP).tar.gz ./openroad
-
-
-run-image: run/Dockerfile
-	export DOCKER_BUILDKIT=1; docker build $(DOCKER_BUILD_OPTS) -t $@ run | tee logs/docker/$@.build.txt
-
-export-tools-docker: export-tools run-image
-	docker run \
-		-it \
-		--mount type=bind,source=$(CURDIR)/export/openroad,target=/openroad \
-		--mount type=bind,source=$(CURDIR)/../flow,target=/flow \
-		run-image
 
 
 # NOTE: This does not clean the docker images
