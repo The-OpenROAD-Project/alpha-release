@@ -30,13 +30,13 @@ RUN git clone --recursive https://github.com/sanggido/OpenDP.git
 RUN mkdir /OpenDP/build
 WORKDIR /OpenDP/build
 
-RUN cmake -DCMAKE_INSTALL_PREFIX=/build ..
+RUN cmake ..
 
 RUN make && \
     make install
 
 RUN mkdir -p /build/bin/ && \
-    cp /OpenDP/build/opendp /build/bin
+    cp opendp /build/bin
 
 RUN date +"Build Timestamp: %Y-%m-%d_%H-%M-%S" > /build/opendp.version
 RUN git rev-parse HEAD >> /build/opendp.version

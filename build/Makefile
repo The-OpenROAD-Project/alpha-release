@@ -1,5 +1,6 @@
-DOCKER_BUILD_OPTS ?= --rm --ssh default
-# DOCKER_BUILD_OPTS += --no-cache
+DOCKER_BUILD_OPTS ?= --rm
+# DOCKER_BUILD_OPTS ?= --rm --ssh default
+DOCKER_BUILD_OPTS += --no-cache
 
 DOCKER_RUN_OPTS ?= -it \
 	-v $(HOME):$(HOME) \
@@ -11,31 +12,6 @@ DOCKER_RUN_OPTS ?= -it \
 	-v /etc/group:/etc/group:ro \
 	-u `id  -u`:`id -g` \
 	-w ~
-
-
-# ==============================================================================
-# Download Tools
-# ==============================================================================
-DOWNLOAD_DIR = export/downloads
-
-downloads: $(DOWNLOAD_DIR)/grChecker $(DOWNLOAD_DIR)/rtGuideGen $(DOWNLOAD_DIR)/utd.tar.gz
-
-FORCE:
-
-$(DOWNLOAD_DIR)/grChecker: FORCE
-	mkdir -p $(DOWNLOAD_DIR)
-	wget https://vlsicad.ucsd.edu/~bangqixu/toDaeyeon/FlexRoute -O $@
-	chmod +x $@
-
-$(DOWNLOAD_DIR)/rtGuideGen: FORCE
-	mkdir -p $(DOWNLOAD_DIR)
-	wget https://vlsicad.ucsd.edu/~bangqixu/toTutu/routeguide_gen/FlexRoute -O $@
-	chmod +x $@
-
-$(DOWNLOAD_DIR)/utd.tar.gz: FORCE
-	mkdir -p $(DOWNLOAD_DIR)
-	wget https://vlsicad.ucsd.edu/~mgwoo/openroad/utd.tar.gz -O $@
-	chmod +x $@
 
 
 # ==============================================================================
@@ -80,15 +56,13 @@ build-tools: $(TOOL_BUILD_TARGETS)
 # ==============================================================================
 
 TIMESTAMP=$(shell date +"%Y-%m-%d_%H-%M")
-export-tools: $(TOOL_EXPORT_TARGETS) downloads
-	rm -rf export/openroad export/OpenROAD*.tar.gz
+export-tools: $(TOOL_EXPORT_TARGETS)
+	rm -rf export/openroad export/build export/OpenROAD*.tar.gz
 	mkdir -p export/openroad/modules/openroad
 	for tarFile in $(foreach tool,$(TOOLS),export/$(tool).tar.gz); do \
 	  tar -xzf $$tarFile -C export; \
 	done
-	tar -xzf $(DOWNLOAD_DIR)/utd.tar.gz -C export; \
 	mv export/build export/openroad/OpenROAD-$(TIMESTAMP)
-	cp $(DOWNLOAD_DIR)/* export/openroad/OpenROAD-$(TIMESTAMP)/bin
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./modulefile > export/openroad/modules/openroad/$(TIMESTAMP)
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./versionfile > export/openroad/modules/openroad/.version
 	sed 's/@TIMESTAMP@/$(TIMESTAMP)/g' ./setup.sh > export/openroad/setup.sh

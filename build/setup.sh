@@ -9,8 +9,6 @@ fi
 
 
 export OPENROAD=${modroot}
-export OPENROADOS=Linux-x86_64
-
 echo "OPENROAD: ${OPENROAD}"
 
 
@@ -32,8 +30,4 @@ else
   export MANPATH=${modroot}/share/man
 fi
 
-if [ -n "${TCLLIBPATH}" ]; then
-  export TCLLIBPATH=${modroot}/pdn/scripts:$TCLLIBPATH
-else
-  export TCLLIBPATH=${modroot}/pdn/scripts
-fi
+export TCLLIBPATH=${modroot}/pdn/scripts

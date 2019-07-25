@@ -44,7 +44,7 @@ RUN git apply resizer.patch
 
 RUN mkdir build
 WORKDIR build
-RUN cmake -DCMAKE_INSTALL_PREFIX=/build -DCUDD=/usr/local ..
+RUN cmake -DCMAKE_INSTALL_PREFIX=/build -DCMAKE_BUILD_TYPE=DEBUG -DCUDD=/usr/local ..
 
 RUN make
 
