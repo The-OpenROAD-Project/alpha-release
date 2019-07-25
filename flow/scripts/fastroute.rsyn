@@ -1,0 +1,10 @@
+open "generic" {
+  "lefFiles" : "../../tech/${DESIGN_NAME}/merged_padded.lef",
+  "defFiles" : "../../results/${DESIGN_NAME}/4_cts.def"
+};
+
+run "rsyn.fastRoute" {"outfile" : "results/${DESIGN_NAME}/route.guide"};
+
+# outfile: string. indicate the name of the generated guides file
+# adjustment: float. indicate the percentage reduction of each edge
+# maxRoutingLayer: integer. indicate the max routing layer available for FastRoute

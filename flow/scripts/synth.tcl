@@ -58,4 +58,4 @@ tee -o $::env(REPORTS_DIR)/synth_check.txt check
 tee -o $::env(REPORTS_DIR)/synth_stat.txt stat -liberty $::env(OBJECTS_DIR)/merged.lib
 
 # write synthesized design
-write_verilog -noattr -noexpr -nohex -nodec $::env(RESULTS_DIR)/synth.yosys.v
+write_verilog -noattr -noexpr -nohex -nodec $::env(RESULTS_DIR)/1_synth.yosys.v

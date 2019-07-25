@@ -29,7 +29,7 @@
 DESIGN_CONFIG ?= ./designs/gcd_nangate45.mk
 
 
-all: finish
+all: route
 
 # ==============================================================================
 #  ____  _____ _____ _   _ ____
@@ -117,26 +117,26 @@ $(OBJECTS_DIR)/merged.lib: $(DESIGN_LIB_FILES)
 #  ___) || | | |\  | | | |  _  | |___ ___) | | ___) |
 # |____/ |_| |_| \_| |_| |_| |_|_____|____/___|____/
 #
-synth: $(RESULTS_DIR)/synth.v \
-       $(RESULTS_DIR)/synth.sdc
+synth: $(RESULTS_DIR)/1_synth.v \
+       $(RESULTS_DIR)/1_synth.sdc
 # ==============================================================================
 
 
 # Run Synthesis using yosys
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/synth.yosys.v:  $(OBJECTS_DIR)/merged.lib
-	@$(call BANNER, SYNTHESIS)
+$(RESULTS_DIR)/1_synth.yosys.v:  $(OBJECTS_DIR)/merged.lib
+	@$(call BANNER, 1. SYNTHESIS)
 	mkdir -p $(RESULTS_DIR) $(LOG_DIR) $(REPORTS_DIR)
-	yosys -l $(LOG_DIR)/synth.log -c scripts/synth.tcl
+	yosys -l $(LOG_DIR)/1_yosys.log -c scripts/synth.tcl
 
-$(RESULTS_DIR)/synth.v: $(RESULTS_DIR)/synth.yosys.v
+$(RESULTS_DIR)/1_synth.v: $(RESULTS_DIR)/1_synth.yosys.v
 	sed -E "/assign(.*)1'(.*)x;/d"  $< > $@
 
-$(RESULTS_DIR)/synth.sdc: $(SDC_FILE)
+$(RESULTS_DIR)/1_synth.sdc: $(SDC_FILE)
 	cp $< $@
 
 clean_synth:
-	rm -rf $(RESULTS_DIR)/synth*.v $(RESULTS_DIR)/synth.sdc
+	rm -rf $(RESULTS_DIR)/1_synth*.v $(RESULTS_DIR)/1_synth.sdc
 	rm -rf _tmp_yosys-abc-*
 
 
@@ -147,21 +147,21 @@ clean_synth:
 # |  _| | |__| |_| | |_| |  _ <|  __/| |___ / ___ \| |\  |
 # |_|   |_____\___/ \___/|_| \_\_|   |_____/_/   \_\_| \_|
 #
-floorplan: $(RESULTS_DIR)/floorplan.def \
-           $(RESULTS_DIR)/floorplan.v \
-           $(RESULTS_DIR)/floorplan.sdc
+floorplan: $(RESULTS_DIR)/2_floorplan.def \
+           $(RESULTS_DIR)/2_floorplan.v \
+           $(RESULTS_DIR)/2_floorplan.sdc
 # ==============================================================================
 
 
 # STEP 1: Translate verilog to def
 #-------------------------------------------------------------------------------
 
-$(RESULTS_DIR)/init.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/synth.v
-	@$(call BANNER, FLOORPLAN)
+$(RESULTS_DIR)/2_1_floorplan.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/1_synth.v
+	@$(call BANNER, 2. FLOORPLAN)
 	verilog2def \
 	  -lef $(TECH_DIR)/merged.lef \
 	  $(foreach file,$(LIB_FILES),-liberty $(file)) \
-	  -verilog $(RESULTS_DIR)/synth.v \
+	  -verilog $(RESULTS_DIR)/1_synth.v \
 	  -top_module $(DESIGN_NAME) \
 	  -units 2000 \
 	  -site $(PLACE_SITE) \
@@ -169,35 +169,35 @@ $(RESULTS_DIR)/init.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/synth.v
 	  -core_area "$(CORE_AREA)" \
 	  -tracks $(TRACKS_INFO_FILE) \
 	  -def $@ \
-	  2>&1 | tee $(LOG_DIR)/verilog2def.log
+	  2>&1 | tee $(LOG_DIR)/2_1_verilog2def.log
 	sed -i 's/VERSION 5.5/VERSION 5.6/' $@
 #TODO Update to use utilization
 
 # STEP 2: IO Placement
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/init_io.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/init.def
+$(RESULTS_DIR)/2_2_floorplan_io.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/2_1_floorplan.def
 	ioPlacer --input-lef $(TECH_DIR)/merged.lef \
-	         --input-def $(RESULTS_DIR)/init.def \
+	         --input-def $(RESULTS_DIR)/2_1_floorplan.def \
 	         --output $@ \
 	         --hmetal 5 \
 	         --vmetal 6 \
 	         --random 1 \
 	         --force-spread 1 \
 	         --wirelen 1 \
-	         2>&1 | tee $(LOG_DIR)/ioPlacer.log
+	         2>&1 | tee $(LOG_DIR)/2_2_ioPlacer.log
 
 # STEP 3: Timing Driven Mixed Sized Placement
 # Only run if required
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/init_tdms.def: $(RESULTS_DIR)/init_io.def $(RESULTS_DIR)/synth.v $(RESULTS_DIR)/synth.sdc $(LIB_FILES) $(TECH_DIR)/merged_padded.lef | ./PORT9.dat ./POST9.dat ./POWV9.dat
+$(RESULTS_DIR)/2_3_floorplan_tdms.def: $(RESULTS_DIR)/2_2_floorplan_io.def $(RESULTS_DIR)/1_synth.v $(RESULTS_DIR)/1_synth.sdc $(LIB_FILES) $(TECH_DIR)/merged_padded.lef | ./PORT9.dat ./POST9.dat ./POWV9.dat
 ifeq ($(RUN_MACRO_PLACEMENT),1)
 	RePlAce \
 	  -bmflag etc \
 	  -lef $(TECH_DIR)/merged_padded.lef \
-	  -def $(RESULTS_DIR)/init_io.def  \
-	  -verilog $(RESULTS_DIR)/synth.v \
+	  -def $(RESULTS_DIR)/2_2_floorplan_io.def  \
+	  -verilog $(RESULTS_DIR)/1_synth.v \
 	  $(foreach file,$(LIB_FILES),-lib $(file)) \
-	  -sdc $(RESULTS_DIR)/synth.sdc \
+	  -sdc $(RESULTS_DIR)/1_synth.sdc \
 	  -output $(RESULTS_DIR)/td-ms-replace \
 	  -t 1 \
 	  -timing \
@@ -208,8 +208,8 @@ ifeq ($(RUN_MACRO_PLACEMENT),1)
 	  -experi output \
 	  -den 0.7 \
 	  -onlyGP \
-	  2>&1 | tee $(LOG_DIR)/TD-MS-RePlAce.log
-	cp $(RESULTS_DIR)/td-ms-replace/etc/init_io/output/init_io_final.def $@
+	  2>&1 | tee $(LOG_DIR)/2_3_TD-MS-RePlAce.log
+	cp $(RESULTS_DIR)/td-ms-replace/etc/2_2_floorplan_io/output/2_2_floorplan_io_final.def $@
 else
 	cp $< $@
 endif
@@ -217,58 +217,61 @@ endif
 # STEP 4: Macro Placement
 # Only run if required
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/init_macro.def: $(RESULTS_DIR)/init_tdms.def $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/synth.v $(RESULTS_DIR)/synth.sdc $(IP_GLOBAL_CFG)
+$(RESULTS_DIR)/2_4_floorplan_macro.def: $(RESULTS_DIR)/2_3_floorplan_tdms.def $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/1_synth.v $(RESULTS_DIR)/1_synth.sdc $(IP_GLOBAL_CFG)
 ifeq ($(RUN_MACRO_PLACEMENT),1)
 	fplan $(foreach file,$(LIB_FILES),-lib $(file)) \
-	    -verilog $(RESULTS_DIR)/synth.v \
+	    -verilog $(RESULTS_DIR)/1_synth.v \
 	    -lef $(TECH_DIR)/merged_padded.lef \
-	    -def $(RESULTS_DIR)/init_tdms.def \
+	    -def $(RESULTS_DIR)/2_3_floorplan_tdms.def \
 	    -design $(DESIGN_NAME) \
-	    -sdc $(RESULTS_DIR)/synth.sdc \
+	    -sdc $(RESULTS_DIR)/1_synth.sdc \
 	    -output $(DESIGN_NAME) \
 	    -globalConfig $(IP_GLOBAL_CFG) \
 	    -depth 3 \
 	    -plot \
 	    -westFix \
-	    | tee $(LOG_DIR)/fplan.log
+	    | tee $(LOG_DIR)/2_4_fplan.log
 	    mv $(DESIGN_NAME)_best.def $@
 else
 	cp $< $@
 endif
 
-# STEP 4: PDN generation
+# STEP 5: PDN generation
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/init_pdn.def: $(RESULTS_DIR)/init_macro.def
+$(RESULTS_DIR)/2_5_floorplan_pdn.def: $(RESULTS_DIR)/2_4_floorplan_macro.def
 ifneq ($(PDN_CFG),)
-	apply_pdn $(PDN_CFG)
+	apply_pdn $(PDN_CFG) | tee $(LOG_DIR)/2_5_apply_pdn.log
 	mv $(DESIGN_NAME)_post_T8.def $@
 else
 	cp $< $@
 endif
 
 
-# STEP 5: Tapcell and Welltie insertion
+# STEP 6: Tapcell and Welltie insertion
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/floorplan.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/init_pdn.def
-	cp $(RESULTS_DIR)/init_pdn.def $@
+$(RESULTS_DIR)/2_6_floorplan_tapcell.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/2_5_floorplan_pdn.def
+	cp $(RESULTS_DIR)/2_5_floorplan_pdn.def $@
 	tapcell -lef $(TECH_DIR)/merged.lef \
-	        -def $(RESULTS_DIR)/init_pdn.def \
+	        -def $(RESULTS_DIR)/2_5_floorplan_pdn.def \
 	        -rule $(WELLTTAP_RULE) \
 	        -welltap $(WELLTIE_CELL) \
 	        -endcap $(ENDCAP_CELL) \
 	        -rows \
-	        -outdef $@ | tee $(LOG_DIR)/tapcell.log
+	        -outdef $@ | tee $(LOG_DIR)/2_6_tapcell.log
 
-$(RESULTS_DIR)/floorplan.v: $(RESULTS_DIR)/synth.v
+$(RESULTS_DIR)/2_floorplan.def: $(RESULTS_DIR)/2_6_floorplan_tapcell.def
 	cp $< $@
 
-$(RESULTS_DIR)/floorplan.sdc: $(RESULTS_DIR)/synth.sdc
+$(RESULTS_DIR)/2_floorplan.v: $(RESULTS_DIR)/1_synth.v
+	cp $< $@
+
+$(RESULTS_DIR)/2_floorplan.sdc: $(RESULTS_DIR)/1_synth.sdc
 	cp $< $@
 
 
 clean_floorplan:
-	rm -rf $(RESULTS_DIR)/init*.def
-	rm -rf $(RESULTS_DIR)/floorplan.v $(RESULTS_DIR)/floorplan.sdc
+	rm -rf $(RESULTS_DIR)/2_*floorplan*.def
+	rm -rf $(RESULTS_DIR)/2_floorplan.v $(RESULTS_DIR)/2_floorplan.sdc
 
 # ==============================================================================
 #  ____  _        _    ____ _____
@@ -277,22 +280,22 @@ clean_floorplan:
 # |  __/| |___ / ___ \ |___| |___
 # |_|   |_____/_/   \_\____|_____|
 #
-place: $(RESULTS_DIR)/place.def \
-       $(RESULTS_DIR)/place.v \
-       $(RESULTS_DIR)/place.sdc
+place: $(RESULTS_DIR)/3_place.def \
+       $(RESULTS_DIR)/3_place.v \
+       $(RESULTS_DIR)/3_place.sdc
 # ==============================================================================
 
 # STEP 1: Global placement
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/place_gp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/floorplan.def $(RESULTS_DIR)/floorplan.v $(RESULTS_DIR)/floorplan.sdc | ./PORT9.dat ./POST9.dat ./POWV9.dat
-	@$(call BANNER, PLACE)
+$(RESULTS_DIR)/3_1_place_gp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/2_floorplan.def $(RESULTS_DIR)/2_floorplan.v $(RESULTS_DIR)/2_floorplan.sdc | ./PORT9.dat ./POST9.dat ./POWV9.dat
+	@$(call BANNER, 3. PLACE)
 	rm -rf $(RESULTS_DIR)/etc/
 	RePlAce -bmflag etc \
 	        -lef $(TECH_DIR)/merged_padded.lef \
-	        -def $(RESULTS_DIR)/floorplan.def \
-	        -verilog $(RESULTS_DIR)/floorplan.v \
+	        -def $(RESULTS_DIR)/2_floorplan.def \
+	        -verilog $(RESULTS_DIR)/2_floorplan.v \
 	        $(foreach file,$(LIB_FILES),-lib $(file)) \
-	        -sdc $(RESULTS_DIR)/floorplan.sdc \
+	        -sdc $(RESULTS_DIR)/2_floorplan.sdc \
 	        -output $(RESULTS_DIR)/replace \
 	        -t 1 \
 	        -timing \
@@ -304,40 +307,43 @@ $(RESULTS_DIR)/place_gp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/floorp
 	        -den 0.509 \
 	        -initCoef 0.00002 \
 	        -onlyGP \
-	        2>&1 | tee $(LOG_DIR)/RePlAce.log
-	cp $(RESULTS_DIR)/replace/etc/floorplan/output/floorplan_final.def $@
+	        2>&1 | tee $(LOG_DIR)/3_1_RePlAce.log
+	cp $(RESULTS_DIR)/replace/etc/2_floorplan/output/2_floorplan_final.def $@
 
-$(RESULTS_DIR)/replace.gif: $(RESULTS_DIR)/place_gp.def
+$(RESULTS_DIR)/replace.gif: $(RESULTS_DIR)/3_1_place_gp.def
 	convert -delay 20  $(RESULTS_DIR)/replace/etc/floorplan/output/cell/cGP2D*.jpg \
 	        -delay 100 $(RESULTS_DIR)/replace/etc/floorplan/output/globalPlaceResult.jpg \
 	        $@
 
 # STEP 2: Resizing & Buffering
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/place_gp_resized.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/place_gp.def $(RESULTS_DIR)/floorplan.sdc | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
+$(RESULTS_DIR)/3_2_place_resized.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/3_1_place_gp.def $(RESULTS_DIR)/2_floorplan.sdc | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
 	resizer $(SCRIPTS_DIR)/resize.tcl \
-	        2>&1 | tee $(LOG_DIR)/resizer.log
-	# @! grep --color "Error:" $(LOG_DIR)/resizer.log
+	        2>&1 | tee $(LOG_DIR)/3_2_resizer.log
+	# @! grep --color "Error:" $(LOG_DIR)/3_2_resizer.log
 
-$(RESULTS_DIR)/place.v: $(RESULTS_DIR)/place_gp_resized.def
+$(RESULTS_DIR)/3_place.v: $(RESULTS_DIR)/3_2_place_resized.def
 
 
 # STEP 3: Detail placement
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/place.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/place_gp_resized.def
+$(RESULTS_DIR)/3_3_place_dp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/3_2_place_resized.def
 	opendp -lef $(TECH_DIR)/merged_padded.lef \
-	       -def $(RESULTS_DIR)/place_gp_resized.def \
-	       -output_def $@
+	       -def $(RESULTS_DIR)/3_2_place_resized.def \
+	       -output_def $@ \
+	       2>&1 | tee $(LOG_DIR)/3_3_RePlAce.log
 
+$(RESULTS_DIR)/3_place.def: $(RESULTS_DIR)/3_3_place_dp.def
+	cp $< $@
 
-$(RESULTS_DIR)/place.sdc: $(RESULTS_DIR)/floorplan.sdc
+$(RESULTS_DIR)/3_place.sdc: $(RESULTS_DIR)/2_floorplan.sdc
 	cp $< $@
 
 # Clean Targets
 #-------------------------------------------------------------------------------
 clean_place:
-	rm -rf $(RESULTS_DIR)/place*.def
-	rm -rf $(RESULTS_DIR)/placed.v $(RESULTS_DIR)/placed.sdc
+	rm -rf $(RESULTS_DIR)/3_*place*.def
+	rm -rf $(RESULTS_DIR)/3_place.v $(RESULTS_DIR)/3_place.sdc
 
 
 # ==============================================================================
@@ -347,20 +353,21 @@ clean_place:
 # | |___  | |  ___) |
 #  \____| |_| |____/
 #
-cts: $(RESULTS_DIR)/cts.def \
-     $(RESULTS_DIR)/cts.v \
-     $(RESULTS_DIR)/cts.sdc
+cts: $(RESULTS_DIR)/4_cts.def \
+     $(RESULTS_DIR)/4_cts.v \
+     $(RESULTS_DIR)/4_cts.sdc
 # ==============================================================================
 
 # Prepare tritonCTS config
 # ------------------------------------------------------------------------------
 SKEW  = 50
 TOLER = 1000
-$(OBJECTS_DIR)/tritonCts.config: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/place.def
+$(OBJECTS_DIR)/tritonCts.config: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/3_place.def
+	@$(call BANNER, 4. CTS)
 	mkdir -p $(OBJECTS_DIR)
 	echo "lef $(TECH_DIR)/merged_padded.lef" >> $@
-	echo "path $(RESULTS_DIR)/place.def" >> $@
-	echo "verilog $(RESULTS_DIR)/place.v" >> $@
+	echo "path $(RESULTS_DIR)/3_place.def" >> $@
+	echo "verilog $(RESULTS_DIR)/3_place.v" >> $@
 	echo "design $(DESIGN_NAME)" >> $@
 	echo "target_skew $(SKEW)" >> $@
 	echo "width $(CORE_WIDTH)" >> $@
@@ -374,8 +381,7 @@ $(OBJECTS_DIR)/tritonCts.config: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/pl
 
 # Run TritonCTS
 # ------------------------------------------------------------------------------
-$(RESULTS_DIR)/cts.v: $(OBJECTS_DIR)/tritonCts.config | ./PORT9.dat ./POST9.dat ./POWV9.dat
-	@$(call BANNER, CTS)
+$(RESULTS_DIR)/4_cts.v: $(OBJECTS_DIR)/tritonCts.config | ./PORT9.dat ./POST9.dat ./POWV9.dat
 	$(OPENROAD)/TritonCTS/runTritonCTS.tcl \
 	  -configFilePath=$< \
 	  -scriptsPath=$(OPENROAD)/TritonCTS/scripts \
@@ -383,18 +389,18 @@ $(RESULTS_DIR)/cts.v: $(OBJECTS_DIR)/tritonCts.config | ./PORT9.dat ./POST9.dat 
 	  -lefDefParserPath=$(OPENROAD)/TritonCTS/bin/lefdef2cts \
 	  -executablePath=$(OPENROAD)/TritonCTS/bin/genHtree \
 	  -legalizerPath=$(OPENROAD)/bin/opendp \
-	  -outputPath=$(RESULTS_DIR)/run 2>&1 | tee $(LOG_DIR)/tritonCTS.log
+	  -outputPath=$(RESULTS_DIR)/run 2>&1 | tee $(LOG_DIR)/4_tritonCTS.log
 	cp $(RESULTS_DIR)/run/final.v $@
 
-$(RESULTS_DIR)/cts.def: $(RESULTS_DIR)/cts.v
+$(RESULTS_DIR)/4_cts.def: $(RESULTS_DIR)/4_cts.v
 	cp $(RESULTS_DIR)/run/cts_final.def $@
 
-$(RESULTS_DIR)/cts.sdc: $(RESULTS_DIR)/place.sdc
+$(RESULTS_DIR)/4_cts.sdc: $(RESULTS_DIR)/3_place.sdc
 	cp $< $@
 
 clean_cts:
 	rm -rf $(OBJECTS_DIR)/tritonCts.config
-	rm -rf $(RESULTS_DIR)/cts.def $(RESULTS_DIR)/cts.v $(RESULTS_DIR)/cts.sdc
+	rm -rf $(RESULTS_DIR)/4_cts.def $(RESULTS_DIR)/4_cts.v $(RESULTS_DIR)/4_cts.sdc
 
 
 # ==============================================================================
@@ -404,22 +410,18 @@ clean_cts:
 # |  _ <| |_| | |_| | | |  | || |\  | |_| |
 # |_| \_\\___/ \___/  |_| |___|_| \_|\____|
 #
-route: $(RESULTS_DIR)/route.def \
-       $(RESULTS_DIR)/route.v \
-       $(RESULTS_DIR)/route.sdc
+route: $(RESULTS_DIR)/5_route.def \
+       $(RESULTS_DIR)/5_route.v \
+       $(RESULTS_DIR)/5_route.sdc
 # ==============================================================================
 
 
 # STEP 1: Run global route
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/route.guide: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/cts.def
-	@$(call BANNER, ROUTING)
-	rm -rf ./output ./$(DESIGN_NAME).*
-	utdBoxRouter -do $(SCRIPTS_DIR)/boxRouter.tcl $(DESIGN_NAME) 2>&1 | tee $(LOG_DIR)/utdBoxRouter.log
-	mv ./output/* $(RESULTS_DIR)
-	mv ./$(DESIGN_NAME).* $(RESULTS_DIR)
-	sed '1d' $(RESULTS_DIR)/$(DESIGN_NAME).guide > $@
-
+$(RESULTS_DIR)/route.guide: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/4_cts.def
+	@$(call BANNER, 5. ROUTING)
+	envsubst < $(SCRIPTS_DIR)/fastroute.rsyn > $(OBJECTS_DIR)/fastroute.rsyn
+	FRlefdef --no-gui --script $(OBJECTS_DIR)/fastroute.rsyn 2>&1 | tee $(LOG_DIR)/5_1_FRlefdef.log
 
 
 # STEP 2: Run detail route
@@ -427,11 +429,11 @@ $(RESULTS_DIR)/route.guide: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/cts.def
 
 # Generate param file for TritonRoute
 #-------------------------------------------------------------------------------
-$(OBJECTS_DIR)/TritonRoute.param: $(TECH_DIR)/merged_padded_spacing.lef $(RESULTS_DIR)/cts.def $(RESULTS_DIR)/route.guide
+$(OBJECTS_DIR)/TritonRoute.param: $(TECH_DIR)/merged_padded_spacing.lef $(RESULTS_DIR)/4_cts.def $(RESULTS_DIR)/route.guide
 	echo "lef:$(TECH_DIR)/merged_padded_spacing.lef" > $@
-	echo "def:$(RESULTS_DIR)/cts.def" >> $@
+	echo "def:$(RESULTS_DIR)/4_cts.def" >> $@
 	echo "guide:$(RESULTS_DIR)/route.guide" >> $@
-	echo "output:$(RESULTS_DIR)/route.def" >> $@
+	echo "output:$(RESULTS_DIR)/5_route.def" >> $@
 	echo "outputTA:$(RESULTS_DIR)/route_TA.def" >> $@
 	echo "outputguide:$(RESULTS_DIR)/output_guide.mod" >> $@
 	echo "outputMaze:$(RESULTS_DIR)/maze.log" >> $@
@@ -443,20 +445,20 @@ $(OBJECTS_DIR)/TritonRoute.param: $(TECH_DIR)/merged_padded_spacing.lef $(RESULT
 
 # Run TritonRoute
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/route.def: $(OBJECTS_DIR)/TritonRoute.param
-	TritonRoute $< 2>&1 | tee $(LOG_DIR)/TritonRoute.log
+$(RESULTS_DIR)/5_route.def: $(OBJECTS_DIR)/TritonRoute.param
+	TritonRoute $< 2>&1 | tee $(LOG_DIR)/5_2_TritonRoute.log
 
-$(RESULTS_DIR)/route.v: $(RESULTS_DIR)/cts.v
+$(RESULTS_DIR)/5_route.v: $(RESULTS_DIR)/4_cts.v
 	cp $< $@
 
-$(RESULTS_DIR)/route.sdc: $(RESULTS_DIR)/cts.sdc
+$(RESULTS_DIR)/5_route.sdc: $(RESULTS_DIR)/4_cts.sdc
 	cp $< $@
 
 clean_route:
 	rm -rf output*/ results*.out.dmp layer_*.mps
 	rm -rf *.gdid *.log *.met *.sav *.res.dmp
 	rm -rf $(RESULTS_DIR)/route.guide $(OBJECTS_DIR)/TritonRoute.param
-	rm -rf $(RESULTS_DIR)/route.def $(RESULTS_DIR)/route.v $(RESULTS_DIR)/route.sdc
+	rm -rf $(RESULTS_DIR)/5_route.def $(RESULTS_DIR)/5_route.v $(RESULTS_DIR)/5_2_route.sdc
 
 
 # ==============================================================================
@@ -466,23 +468,35 @@ clean_route:
 # |  _|  | || |\  || | ___) |  _  || || |\  | |_| |
 # |_|   |___|_| \_|___|____/|_| |_|___|_| \_|\____|
 #
-finish: $(RESULTS_DIR)/finish.gds
+finish: $(RESULTS_DIR)/6_final.gds
 # ==============================================================================
 
 # Run magic
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/finish.gds: $(MAGIC_TECH_FILE) $(GDS_FILES) $(RESULTS_DIR)/route.def
-	@$(call BANNER, FINISHING)
+$(RESULTS_DIR)/6_final.gds: $(MAGIC_TECH_FILE) $(GDS_FILES) $(RESULTS_DIR)/5_route.def
+	@$(call BANNER, 6. FINISHING)
 	magic -dnull -noconsole -T $(MAGIC_TECH_FILE) \
-	      $(SCRIPTS_DIR)/magic.tcl | tee $(LOG_DIR)/magic.log
+	      $(SCRIPTS_DIR)/magic.tcl | tee $(LOG_DIR)/6_magic.log
+
+clean_finish:
+	rm -rf $(RESULTS_DIR)/6_final.gds
+
+
 
 
 # ==============================================================================
-clean_finish:
-	rm -rf $(RESULTS_DIR)/finish.gds
+#  __  __ ___ ____   ____
+# |  \/  |_ _/ ___| / ___|
+# | |\/| || |\___ \| |
+# | |  | || | ___) | |___
+# |_|  |_|___|____/ \____|
+#
+# ==============================================================================
+
 
 
 # This cleans all designs + tech
+#-------------------------------------------------------------------------------
 clean_all: clean_synth clean_floorplan clean_place clean_cts clean_route clean_finish
 	rm -rf ./results ./logs ./reports ./objects ./tech
 	rm -rf ./POST9.dat ./PORT9.dat ./POWV9.dat
@@ -490,14 +504,16 @@ clean_all: clean_synth clean_floorplan clean_place clean_cts clean_route clean_f
 	rm -rf layer_*.mps macrocell.list *best.plt *_pdn.def dummy.guide run.param
 	rm -rf *.rpt *.def.v innovus.*
 
-
-# ==============================================================================
+# Open any def file using innovus
+#-------------------------------------------------------------------------------
 $(foreach def,$(notdir $(wildcard $(RESULTS_DIR)/*.def)),debug_$(def)): debug_%:
 	innovus -execute "loadLefFile $(MERGED_LEF) ; \
 	                  loadDefFile $(RESULTS_DIR)/$* ; \
 	                  win" \
 	                  -no_logv ; stty sane
 
+# run designs using gnu parallel
+#-------------------------------------------------------------------------------
 parallel:
 	parallel --sshloginfile parallelNodes.txt \
 	         --timeout 21600 \

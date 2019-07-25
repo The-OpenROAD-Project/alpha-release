@@ -22,12 +22,12 @@ foreach gdsFile $::env(GDS_FILES) {
 
 # Read def and load design
 load $::env(DESIGN_NAME)
-def read $::env(RESULTS_DIR)/route.def
+def read $::env(RESULTS_DIR)/5_route.def
 
 # Write gds
 select top cell
 expand
-gds write $::env(RESULTS_DIR)/finish.gds
+gds write $::env(RESULTS_DIR)/6_final.gds
 
 puts "GDS write complete"
 
