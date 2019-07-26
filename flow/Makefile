@@ -2,8 +2,6 @@
 # Uncomment or add the design to run
 # ==============================================================================
 
-# DESIGN_CONFIG=./designs/gcd_freepdk45.mk
-
 # DESIGN_CONFIG=./designs/aes_nangate45.mk
 # DESIGN_CONFIG=./designs/dynamic_node_nangate45.mk
 # DESIGN_CONFIG=./designs/gcd_nangate45.mk
