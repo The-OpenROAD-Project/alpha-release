@@ -432,7 +432,7 @@ $(OBJECTS_DIR)/TritonRoute.param: $(TECH_DIR)/merged_padded_spacing.lef $(RESULT
 	echo "def:$(RESULTS_DIR)/4_cts.def" >> $@
 	echo "guide:$(RESULTS_DIR)/route.guide" >> $@
 	echo "output:$(RESULTS_DIR)/5_route.def" >> $@
-	echo "outputTA:$(RESULTS_DIR)/route_TA.def" >> $@
+	echo "outputTA:$(RESULTS_DIR)/5_route_TA.def" >> $@
 	echo "outputguide:$(RESULTS_DIR)/output_guide.mod" >> $@
 	echo "outputMaze:$(RESULTS_DIR)/maze.log" >> $@
 	echo "threads:$(NPROC)" >> $@

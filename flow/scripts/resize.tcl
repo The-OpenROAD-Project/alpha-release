@@ -10,7 +10,7 @@ read_def $::env(RESULTS_DIR)/3_1_place_gp.def
 read_sdc $::env(RESULTS_DIR)/2_floorplan.sdc
 
 # Set res and cap
-set_wire_rc -resistance $::env(RES_PER_METER) -capacitance $::env(CAP_PER_METER)
+set_wire_rc -resistance $::env(RES_UNIT_PER_MICRON) -capacitance $::env(CAP_UNIT_PER_MICRON)
 
 # initial report
 report_checks > $::env(REPORTS_DIR)/checks.rpt

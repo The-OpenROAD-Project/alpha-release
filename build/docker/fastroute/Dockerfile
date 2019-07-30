@@ -36,7 +36,7 @@ RUN yum install -y  qt5-qtbase-devel
 # download public key for github.com
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-RUN git clone -b dev https://github.com/The-OpenROAD-Project/FastRoute4-lefdef.git
+RUN git clone https://github.com/The-OpenROAD-Project/FastRoute4-lefdef.git
 
 RUN mkdir /FastRoute4-lefdef/build
 WORKDIR /FastRoute4-lefdef/build
@@ -45,7 +45,7 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_ROOT=/opt/rh/rh-mongodb32/root/usr 
     make
 
 RUN mkdir -p /build/bin/ && \
-    cp /FastRoute4-lefdef/build/rsyn/bin/rsyn /build/bin/FRlefdef
+    cp /FastRoute4-lefdef/build/third_party/rsyn/bin/rsyn /build/bin/FRlefdef
 
 
 RUN date +"Build Timestamp: %Y-%m-%d_%H-%M-%S" > /build/fastroute.version

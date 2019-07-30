@@ -28,8 +28,8 @@ export CTS_BUF_CELL   = BUF_X4
 export CTS_TECH_DIR   = ./platforms/nangate45/tritonCTS
 
 # RC information for the placer
-export CAP_PER_MICRON = 0.235146e-12
-export RES_PER_MICRON = 1.59
+export CAP_UNIT_PER_MICRON = 0.00020
+export RES_UNIT_PER_MICRON = 0.0020
 
 # RC information for the sizer
 export CAP_PER_METER    = 0.36e-9
