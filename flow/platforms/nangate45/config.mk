@@ -6,6 +6,10 @@ export PROCESS = 45
 export TIEHI_CELL_AND_PORT = LOGIC1_X1 Z
 export TIELO_CELL_AND_PORT = LOGIC0_X1 Z
 
+# Blackbox verilog file
+# List all standard cells and cells yosys should treat as blackboxes here
+export BLACKBOX_V_FILE = ./platforms/nangate45/NangateOpenCellLibrary.blackbox.v
+
 # Placement site for core cells
 # This can be found in the technology lef
 export PLACE_SITE = FreePDK45_38x28_10R_NP_162NW_34O

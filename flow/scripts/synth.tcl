@@ -5,13 +5,17 @@ set stat_ext    "_stat.rep"
 set gl_ext      "_gl.v"
 set abc_script  "+read_constr,$::env(SDC_FILE);strash;ifraig;retime,-D,{D},-M,6;strash;dch,-f;map,-p,-M,1,{D},-f;topo;dnsize;buffer,-p;upsize;"
 
+# Reading blackbox implementation of standard cells (treated as blackboxes)
+if {[info exists ::env(BLACKBOX_V_FILE)] && [file exists $::env(BLACKBOX_V_FILE)]} {
+  read_verilog $::env(BLACKBOX_V_FILE)
+}
 
 # read verilog files
 foreach file $::env(VERILOG_FILES) {
   read_verilog $file
 }
 
-# Mapping required for memory macros
+# Mapping required for memory macros treated as blackboxes
 hierarchy -generate tsmc65lp_* o:Q o:QA o:QB \
                                i:CLK i:CLKA i:CLKB \
                                i:CEN i:CENA i:CENB \

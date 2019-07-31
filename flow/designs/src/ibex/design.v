@@ -15,11 +15,23 @@ endmodule
 module prim_clock_gating(clk_i, en_i, test_en_i, clk_o);
   input clk_i, en_i, test_en_i;
   output clk_o;
-  wire clk_i, en_i, test_en_i;
-  wire clk_o;
-  wire n_2;
-  bmux mux_22_24(.ctl (n_2), .in_0 (1'b0), .in_1 (clk_i), .z (clk_o));
-  assign n_2 = en_i | test_en_i;
+
+  // Clk gating is currently unsupported by the flow (in synthesis and cts)
+
+  // wire clk_i, en_i, test_en_i;
+  // wire clk_o;
+  // wire n_2;
+  // bmux mux_22_24(.ctl (n_2), .in_0 (1'b0), .in_1 (clk_i), .z (clk_o));
+  // assign n_2 = en_i | test_en_i;
+
+  assign clk_o = clk_i;
+
+  // CLKGATE_X1 clkgate(
+  //   .CK(clk_i),
+  //   .E(en_i),
+  //   .GCK(clk_o)
+  //   );
+
 endmodule
 
 module add_unsigned(A, B, Z);
