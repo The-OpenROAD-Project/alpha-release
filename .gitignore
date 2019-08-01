@@ -8,6 +8,7 @@ flow/results
 flow/logs
 flow/reports
 flow/objects
+flow/tech
 
 # Tar archives
 flow/*tar.gz
@@ -25,12 +26,14 @@ flow/*.def.v
 *POST9.dat
 *POWV9.dat
 
-#
-flow/tech
-
 
 # yosys temps
 flow/_tmp_yosys-abc-*
+flow/*_pdn.def
+flow/*.plt
+flow/run.param
+flow/dummy.guide
+flow/macrocell.list
 
 # utdBox router temps
 flow/layer_*.mps
@@ -45,7 +48,8 @@ flow/*.opennet
 flow/platforms/tsmc65lp/
 *m0*
 
-flow/parallel*
-
 # network
 .nfs*
+
+
+flow/parallelNodes.txt
