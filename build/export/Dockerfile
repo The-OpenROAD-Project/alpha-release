@@ -6,7 +6,7 @@ MAINTAINER Mingyu woo "mwoo@eng.ucsd.edu"
 
 
 # install base dependencies
-RUN yum install -y git tcl tk libjpeg libgomp libXext libSM libXft libffi cairo
+RUN yum install -y git tcl tk libjpeg libgomp libXext libSM libXft libffi cairo gettext
 
 # python 3.6
 RUN yum install -y install centos-release-scl
