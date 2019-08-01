@@ -43,13 +43,13 @@ include $(DESIGN_CONFIG)
 include ./platforms/$(PLATFORM)/config.mk
 
 # Setup working directories
-export LOG_DIR     = ./logs/$(DESIGN_NAME)
-export OBJECTS_DIR = ./objects/$(DESIGN_NAME)
-export REPORTS_DIR = ./reports/$(DESIGN_NAME)
-export RESULTS_DIR = ./results/$(DESIGN_NAME)
+export LOG_DIR     = ./logs/$(PLATFORM)/$(DESIGN_NAME)
+export OBJECTS_DIR = ./objects/$(PLATFORM)/$(DESIGN_NAME)
+export REPORTS_DIR = ./reports/$(PLATFORM)/$(DESIGN_NAME)
+export RESULTS_DIR = ./results/$(PLATFORM)/$(DESIGN_NAME)
 
 export SCRIPTS_DIR = ./scripts
-export TECH_DIR    = ./tech/$(DESIGN_NAME)
+export TECH_DIR    = ./tech/$(PLATFORM)/$(DESIGN_NAME)
 
 # Tool Options
 SHELL = /bin/bash -o pipefail

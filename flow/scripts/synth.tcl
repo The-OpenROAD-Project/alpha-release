@@ -6,9 +6,7 @@ set gl_ext      "_gl.v"
 set abc_script  "+read_constr,$::env(SDC_FILE);strash;ifraig;retime,-D,{D},-M,6;strash;dch,-f;map,-p,-M,1,{D},-f;topo;dnsize;buffer,-p;upsize;"
 
 # Reading blackbox implementation of standard cells (treated as blackboxes)
-if {[info exists ::env(BLACKBOX_V_FILE)] && [file exists $::env(BLACKBOX_V_FILE)]} {
-  read_verilog $::env(BLACKBOX_V_FILE)
-}
+read_verilog $::env(BLACKBOX_V_FILE)
 
 # read verilog files
 foreach file $::env(VERILOG_FILES) {
@@ -38,11 +36,8 @@ opt_clean -purge
 dfflibmap -liberty $::env(OBJECTS_DIR)/merged.lib
 
 # TODO: Not sure why we have to set these seeing as we are passing sdc?
-set clock $::env(CLOCK_PERIOD)
-set clockPort $::env(CLOCK_PORT)
-
 # mapping for technology
-abc -D [expr $clock * 1000] \
+abc -D [expr $::env(CLOCK_PERIOD) * 1000] \
     -constr "$::env(SDC_FILE)" \
     -liberty $::env(OBJECTS_DIR)/merged.lib \
     -script $abc_script

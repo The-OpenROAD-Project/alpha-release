@@ -16,4 +16,4 @@ export CORE_WIDTH  = 1180
 export CORE_HEIGHT = 980
 
 export CLOCK_PERIOD = 5.600
-export CLOCK_PORT   = clock
+export CLOCK_PORT   = clk_i
