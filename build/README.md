@@ -61,8 +61,15 @@ source setup.sh
 Once installed, all OpenROAD binaries should now be in your system path.
 
 ## Docker install
-You will need docker installed and have rights to run docker images to follow these instructions. The docker image is versioned aligned with the releases.
-1. Pull the docker image
-```docker pull openroad/alpha-release```
-2. Run the docker image. You may need to mount/map local storage
+You can pull a docker image which will have the tools and all dependencies pre-installed. To do this, you will need docker installed and have rights to run docker images. The docker image is versioned aligned with the releases.
+
+Follow these instructions to get started
+1. **Pull the docker image**
+```
+docker pull openroad/alpha-release
+```
+2. **Run the docker image** The following command will run the image as root:
+```
+docker run -i -t  openroad/alpha-release
+```
 3. You should now be able to clone the flow (this repository) or map to it and run the tools from the docker image.
