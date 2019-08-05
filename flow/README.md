@@ -14,7 +14,7 @@ cd alpha-release/flow
 
 
 ## Customizing for designs
-The flow runs all of the steps sequentially to achieve Verilog to GDS. There is an initial platform setup required in order to use the OpenROAD flow. This has already been performed for the FreePDK45, Nangate45 and TSMC65(restricted) platforms. See sample platforms setup in the `platforms` directory.
+The flow runs all of the steps sequentially to achieve Verilog to GDS. There is an initial platform setup required in order to use the OpenROAD flow. This has already been performed for the FreePDK45, Nangate45 and TSMC65(under NDA so not in the alpha-release git repository) platforms. See sample platforms setup in the `platforms` directory.
 
 Once the platform is setup. Create a new design configuration with information about the design.  See sample configurations in the `design` directory
 
