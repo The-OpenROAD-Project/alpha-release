@@ -1,7 +1,9 @@
 # Builds
 
 ## Creating Builds
-:warning: At this time, we are currently recommending the use of precompiled binaries for Centos 6. See [README on installing builds](#installing-builds)
+:warning: At this time, we are currently recommending the use of precompiled binaries for Centos 6.  See [README on installing builds](#installing-builds).
+We plan to address some immediate build/install issues and are working to overhaul the tools to make them more cohesive. Support for newer linux distributions is also planned.
+We welcome any patches to improve support for other Linux distributions and operating systems as long as they do not overly complicate the build process.
 
 The build framework has a dependency on docker. You will need docker Docker 18.09 (or later) installed. It is also necessary to setup an ssh-agent. You can run `ssh-add -L` to check if the agent is setup or `eval $(ssh-agent -s)` to start the agent
 
