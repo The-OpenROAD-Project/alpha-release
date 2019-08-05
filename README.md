@@ -8,7 +8,8 @@ For a technical description of the OpenROAD flow, please refer to our DAC paper:
 
 
 ## Build
-:warning: At this time, we are currently recommending the use of precompiled binaries for Centos 6.
+:warning: At this time, we are currently recommending the use of precompiled binaries for Centos 6. We plan to address some immediate build/install issues and are working to overhaul the tools to make them more cohesive. Support for newer linux distributions is also planned.
+We welcome any patches to improve support for other Linux distributions and operating systems as long as they do not overly complicate the build process.
 
 See [README](build#installing-builds) on installing builds and assembling all of the OpenROAD tools into a package.
 
