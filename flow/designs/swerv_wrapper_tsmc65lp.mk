@@ -10,10 +10,11 @@ export GDS_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/gds/*.gds2))
 
 export RUN_MACRO_PLACEMENT = 1
 
-export DIE_AREA    = 0.0  0.0  1848.0 1448.0
-export CORE_AREA   = 14.0 14.0 1834.0 1434.0
-export CORE_WIDTH  = 1834.0
-export CORE_HEIGHT = 1434.0
+# These values must be multiples of placement site
+export DIE_AREA    = 0 0 1848 1449.6
+export CORE_AREA   = 10 12 1838 1440
+export CORE_WIDTH  = 1828
+export CORE_HEIGHT = 1428
 
 export CLOCK_PERIOD = 10.000
 export CLOCK_PORT   = clk

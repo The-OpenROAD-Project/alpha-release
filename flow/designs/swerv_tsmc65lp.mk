@@ -8,10 +8,11 @@ export MERGED_LEF = ./platforms/tsmc65lp/merged.lef
 export LIB_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/lib/*.lib))
 export GDS_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/gds/*.gds2))
 
-export DIE_AREA    = 0.0  0.0  1548.0 1548.0
-export CORE_AREA   = 14.0 14.0 1534.0 1534.0
-export CORE_WIDTH  = 1534.0
-export CORE_HEIGHT = 1534.0
+# These values must be multiples of placement site
+export DIE_AREA    = 0 0 1550 1341.6
+export CORE_AREA   = 10 12 1540 1332
+export CORE_WIDTH  = 1530
+export CORE_HEIGHT = 1320
 
 export CLOCK_PERIOD = 10.000
 export CLOCK_PORT   = clk
