@@ -6,6 +6,8 @@ export PROCESS = 45
 export TIEHI_CELL_AND_PORT = LOGIC1_X1 Z
 export TIELO_CELL_AND_PORT = LOGIC0_X1 Z
 
+export MIN_BUF_CELL_AND_PORTS = BUF_X1 A Z
+
 # Blackbox verilog file
 # List all standard cells and cells yosys should treat as blackboxes here
 export BLACKBOX_V_FILE = ./platforms/nangate45/NangateOpenCellLibrary.blackbox.v
