@@ -5,7 +5,7 @@ foreach libFile $::env(LIB_FILES) {
 
 
 # Read lef def and sdc
-read_lef $::env(TECH_DIR)/merged.lef
+read_lef $::env(OBJECTS_DIR)/merged.lef
 read_def $::env(RESULTS_DIR)/3_1_place_gp.def
 read_sdc $::env(RESULTS_DIR)/2_floorplan.sdc
 

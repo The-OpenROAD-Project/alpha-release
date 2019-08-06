@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import re
 import sys
+import os
 import argparse  # argument parsing
 
 # Parse and validate arguments
@@ -40,6 +41,8 @@ def replace_pad(match):
   replace = r"MACRO " + m[0] + m[1] + "SIZE " + new_x + " BY " + m[3] + m[4] + "END"
   return replace
 
+print(os.path.basename(__file__),": Padding technology lef file")
+
 # Read input file
 f = open(args.inputLef)
 content = f.read()
@@ -56,5 +59,7 @@ f.close()
 
 # Check
 if count < 1:
-  print("CRITICAL WARNING: Pattern not found")
+  print("WARNING: Replacement pattern not found")
   # sys.exit(1)
+
+print(os.path.basename(__file__),": Finished")

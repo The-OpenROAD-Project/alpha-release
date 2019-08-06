@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import re
 import sys
+import os
 import argparse  # argument parsing
 
 # Parse and validate arguments
@@ -13,6 +14,8 @@ parser.add_argument('--outputLef', '-o', required=True,
                     help='Output Lef')
 args = parser.parse_args()
 
+
+print(os.path.basename(__file__),": Modify lef spacing in technology lef file")
 
 f = open(args.inputLef)
 content = f.read()
@@ -28,4 +31,6 @@ f.write(result)
 f.close()
 
 if count < 1:
-  print("CRITICAL WARNING: Pattern not found")
+  print("WARNING: Replacement pattern not found")
+
+print(os.path.basename(__file__),": Finished")

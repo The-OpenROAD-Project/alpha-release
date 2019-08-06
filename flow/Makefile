@@ -12,7 +12,6 @@
 # DESIGN_CONFIG=./designs/bp_fe_top_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/coyote_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/dynamic_node_tsmc65lp.mk
-# DESIGN_CONFIG=./designs/fasoc_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/gcd_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/ibex_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/jpeg_tsmc65lp.mk
@@ -22,10 +21,13 @@
 # DESIGN_CONFIG=./designs/vb_tsmc65lp.mk
 
 
-
 # Default design
 DESIGN_CONFIG ?= ./designs/gcd_nangate45.mk
 
+# # Global override Floorplan
+# CORE_UTILIZATION := 30
+# CORE_ASPECT_RATIO := 1
+# CORE_MARGIN := 4
 
 all: route
 
@@ -49,7 +51,6 @@ export REPORTS_DIR = ./reports/$(PLATFORM)/$(DESIGN_NAME)
 export RESULTS_DIR = ./results/$(PLATFORM)/$(DESIGN_NAME)
 
 export SCRIPTS_DIR = ./scripts
-export TECH_DIR    = ./tech/$(PLATFORM)/$(DESIGN_NAME)
 
 # Tool Options
 SHELL = /bin/bash -o pipefail
@@ -68,15 +69,15 @@ endif
 
 # Pre-process Lefs
 # ==============================================================================
-$(TECH_DIR)/merged.lef: $(MERGED_LEF)
-	mkdir -p $(TECH_DIR)
+$(OBJECTS_DIR)/merged.lef: $(MERGED_LEF)
+	mkdir -p $(OBJECTS_DIR)
 	cp $< $@
 
-$(TECH_DIR)/merged_padded.lef: $(TECH_DIR)/merged.lef
+$(OBJECTS_DIR)/merged_padded.lef: $(OBJECTS_DIR)/merged.lef
 	$(SCRIPTS_DIR)/padLefMacro.py -p $(CELL_PAD_IN_MICRON) -i $< -o $@
 
 # Modify lef files for TritonRoute
-$(TECH_DIR)/merged_padded_spacing.lef: $(TECH_DIR)/merged_padded.lef
+$(OBJECTS_DIR)/merged_padded_spacing.lef: $(OBJECTS_DIR)/merged_padded.lef
 	$(SCRIPTS_DIR)/modifyLefSpacing.py -i $< -o $@
 
 # Pre-process libraries
@@ -122,13 +123,10 @@ synth: $(RESULTS_DIR)/1_synth.v \
 
 # Run Synthesis using yosys
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/1_synth.yosys.v:  $(OBJECTS_DIR)/merged.lib
+$(RESULTS_DIR)/1_synth.v:  $(OBJECTS_DIR)/merged.lib
 	@$(call BANNER, 1. SYNTHESIS)
 	mkdir -p $(RESULTS_DIR) $(LOG_DIR) $(REPORTS_DIR)
 	yosys -l $(LOG_DIR)/1_yosys.log -c scripts/synth.tcl
-
-$(RESULTS_DIR)/1_synth.v: $(RESULTS_DIR)/1_synth.yosys.v
-	sed -E "/assign(.*)1'(.*)x;/d"  $< > $@
 
 $(RESULTS_DIR)/1_synth.sdc: $(SDC_FILE)
 	cp $< $@
@@ -153,28 +151,33 @@ floorplan: $(RESULTS_DIR)/2_floorplan.def \
 
 # STEP 1: Translate verilog to def
 #-------------------------------------------------------------------------------
+ifneq ($(CORE_UTILIZATION),)
+  FLOORPLAN_ARGS = -utilization $(CORE_UTILIZATION) \
+                   -aspect_ratio $(CORE_ASPECT_RATIO) \
+                   -core_space $(CORE_MARGIN)
+else
+  FLOORPLAN_ARGS = -die_area "$(DIE_AREA)" -core_area "$(CORE_AREA)"
+endif
 
-$(RESULTS_DIR)/2_1_floorplan.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/1_synth.v
+$(RESULTS_DIR)/2_1_floorplan.def: $(OBJECTS_DIR)/merged.lef $(RESULTS_DIR)/1_synth.v
 	@$(call BANNER, 2. FLOORPLAN)
 	verilog2def \
-	  -lef $(TECH_DIR)/merged.lef \
+	  -lef $(OBJECTS_DIR)/merged.lef \
 	  $(foreach file,$(LIB_FILES),-liberty $(file)) \
 	  -verilog $(RESULTS_DIR)/1_synth.v \
 	  -top_module $(DESIGN_NAME) \
 	  -units 2000 \
 	  -site $(PLACE_SITE) \
-	  -die_area "$(DIE_AREA)" \
-	  -core_area "$(CORE_AREA)" \
 	  -tracks $(TRACKS_INFO_FILE) \
 	  -def $@ \
+	  $(FLOORPLAN_ARGS) \
 	  2>&1 | tee $(LOG_DIR)/2_1_verilog2def.log
 	sed -i 's/VERSION 5.5/VERSION 5.6/' $@
-#TODO Update to use utilization
 
 # STEP 2: IO Placement
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/2_2_floorplan_io.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/2_1_floorplan.def
-	ioPlacer --input-lef $(TECH_DIR)/merged.lef \
+$(RESULTS_DIR)/2_2_floorplan_io.def: $(OBJECTS_DIR)/merged.lef $(RESULTS_DIR)/2_1_floorplan.def
+	ioPlacer --input-lef $(OBJECTS_DIR)/merged.lef \
 	         --input-def $(RESULTS_DIR)/2_1_floorplan.def \
 	         --output $@ \
 	         --hmetal 5 \
@@ -187,11 +190,11 @@ $(RESULTS_DIR)/2_2_floorplan_io.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/2_1_f
 # STEP 3: Timing Driven Mixed Sized Placement
 # Only run if required
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/2_3_floorplan_tdms.def: $(RESULTS_DIR)/2_2_floorplan_io.def $(RESULTS_DIR)/1_synth.v $(RESULTS_DIR)/1_synth.sdc $(LIB_FILES) $(TECH_DIR)/merged_padded.lef | ./PORT9.dat ./POST9.dat ./POWV9.dat
+$(RESULTS_DIR)/2_3_floorplan_tdms.def: $(RESULTS_DIR)/2_2_floorplan_io.def $(RESULTS_DIR)/1_synth.v $(RESULTS_DIR)/1_synth.sdc $(LIB_FILES) $(OBJECTS_DIR)/merged_padded.lef | ./PORT9.dat ./POST9.dat ./POWV9.dat
 ifeq ($(RUN_MACRO_PLACEMENT),1)
 	RePlAce \
 	  -bmflag etc \
-	  -lef $(TECH_DIR)/merged_padded.lef \
+	  -lef $(OBJECTS_DIR)/merged_padded.lef \
 	  -def $(RESULTS_DIR)/2_2_floorplan_io.def  \
 	  -verilog $(RESULTS_DIR)/1_synth.v \
 	  $(foreach file,$(LIB_FILES),-lib $(file)) \
@@ -215,11 +218,11 @@ endif
 # STEP 4: Macro Placement
 # Only run if required
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/2_4_floorplan_macro.def: $(RESULTS_DIR)/2_3_floorplan_tdms.def $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/1_synth.v $(RESULTS_DIR)/1_synth.sdc $(IP_GLOBAL_CFG)
+$(RESULTS_DIR)/2_4_floorplan_macro.def: $(RESULTS_DIR)/2_3_floorplan_tdms.def $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/1_synth.v $(RESULTS_DIR)/1_synth.sdc $(IP_GLOBAL_CFG)
 ifeq ($(RUN_MACRO_PLACEMENT),1)
 	fplan $(foreach file,$(LIB_FILES),-lib $(file)) \
 	    -verilog $(RESULTS_DIR)/1_synth.v \
-	    -lef $(TECH_DIR)/merged_padded.lef \
+	    -lef $(OBJECTS_DIR)/merged_padded.lef \
 	    -def $(RESULTS_DIR)/2_3_floorplan_tdms.def \
 	    -design $(DESIGN_NAME) \
 	    -sdc $(RESULTS_DIR)/1_synth.sdc \
@@ -247,9 +250,9 @@ endif
 
 # STEP 6: Tapcell and Welltie insertion
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/2_6_floorplan_tapcell.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/2_5_floorplan_pdn.def
+$(RESULTS_DIR)/2_6_floorplan_tapcell.def: $(OBJECTS_DIR)/merged.lef $(RESULTS_DIR)/2_5_floorplan_pdn.def
 	cp $(RESULTS_DIR)/2_5_floorplan_pdn.def $@
-	tapcell -lef $(TECH_DIR)/merged.lef \
+	tapcell -lef $(OBJECTS_DIR)/merged.lef \
 	        -def $(RESULTS_DIR)/2_5_floorplan_pdn.def \
 	        -rule $(WELLTTAP_RULE) \
 	        -welltap $(WELLTIE_CELL) \
@@ -285,11 +288,11 @@ place: $(RESULTS_DIR)/3_place.def \
 
 # STEP 1: Global placement
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/3_1_place_gp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/2_floorplan.def $(RESULTS_DIR)/2_floorplan.v $(RESULTS_DIR)/2_floorplan.sdc | ./PORT9.dat ./POST9.dat ./POWV9.dat
+$(RESULTS_DIR)/3_1_place_gp.def: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/2_floorplan.def $(RESULTS_DIR)/2_floorplan.v $(RESULTS_DIR)/2_floorplan.sdc | ./PORT9.dat ./POST9.dat ./POWV9.dat
 	@$(call BANNER, 3. PLACE)
 	rm -rf $(RESULTS_DIR)/etc/
 	RePlAce -bmflag etc \
-	        -lef $(TECH_DIR)/merged_padded.lef \
+	        -lef $(OBJECTS_DIR)/merged_padded.lef \
 	        -def $(RESULTS_DIR)/2_floorplan.def \
 	        -verilog $(RESULTS_DIR)/2_floorplan.v \
 	        $(foreach file,$(LIB_FILES),-lib $(file)) \
@@ -315,7 +318,7 @@ $(RESULTS_DIR)/replace.gif: $(RESULTS_DIR)/3_1_place_gp.def
 
 # STEP 2: Resizing & Buffering
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/3_2_place_resized.def: $(TECH_DIR)/merged.lef $(RESULTS_DIR)/3_1_place_gp.def $(RESULTS_DIR)/2_floorplan.sdc | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
+$(RESULTS_DIR)/3_2_place_resized.def: $(OBJECTS_DIR)/merged.lef $(RESULTS_DIR)/3_1_place_gp.def $(RESULTS_DIR)/2_floorplan.sdc | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
 	resizer $(SCRIPTS_DIR)/resize.tcl \
 	        2>&1 | tee $(LOG_DIR)/3_2_resizer.log
 	# @! grep --color "Error:" $(LOG_DIR)/3_2_resizer.log
@@ -325,8 +328,8 @@ $(RESULTS_DIR)/3_place.v: $(RESULTS_DIR)/3_2_place_resized.def
 
 # STEP 3: Detail placement
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/3_3_place_dp.def: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/3_2_place_resized.def
-	opendp -lef $(TECH_DIR)/merged_padded.lef \
+$(RESULTS_DIR)/3_3_place_dp.def: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/3_2_place_resized.def
+	opendp -lef $(OBJECTS_DIR)/merged_padded.lef \
 	       -def $(RESULTS_DIR)/3_2_place_resized.def \
 	       -output_def $@ \
 	       2>&1 | tee $(LOG_DIR)/3_3_RePlAce.log
@@ -360,10 +363,10 @@ cts: $(RESULTS_DIR)/4_cts.def \
 # ------------------------------------------------------------------------------
 SKEW  = 50
 TOLER = 1000
-$(OBJECTS_DIR)/tritonCts.config: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/3_place.def
+$(OBJECTS_DIR)/tritonCts.config: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/3_place.def
 	@$(call BANNER, 4. CTS)
 	mkdir -p $(OBJECTS_DIR)
-	echo "lef $(TECH_DIR)/merged_padded.lef" >> $@
+	echo "lef $(OBJECTS_DIR)/merged_padded.lef" >> $@
 	echo "path $(RESULTS_DIR)/3_place.def" >> $@
 	echo "verilog $(RESULTS_DIR)/3_place.v" >> $@
 	echo "design $(DESIGN_NAME)" >> $@
@@ -416,7 +419,7 @@ route: $(RESULTS_DIR)/5_route.def \
 
 # STEP 1: Run global route
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/route.guide: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/4_cts.def
+$(RESULTS_DIR)/route.guide: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/4_cts.def
 	@$(call BANNER, 5. ROUTING)
 	envsubst < $(SCRIPTS_DIR)/fastroute.rsyn > $(OBJECTS_DIR)/fastroute.rsyn
 	FRlefdef --no-gui --script $(OBJECTS_DIR)/fastroute.rsyn 2>&1 | tee $(LOG_DIR)/5_1_FRlefdef.log
@@ -427,8 +430,8 @@ $(RESULTS_DIR)/route.guide: $(TECH_DIR)/merged_padded.lef $(RESULTS_DIR)/4_cts.d
 
 # Generate param file for TritonRoute
 #-------------------------------------------------------------------------------
-$(OBJECTS_DIR)/TritonRoute.param: $(TECH_DIR)/merged_padded_spacing.lef $(RESULTS_DIR)/4_cts.def $(RESULTS_DIR)/route.guide
-	echo "lef:$(TECH_DIR)/merged_padded_spacing.lef" > $@
+$(OBJECTS_DIR)/TritonRoute.param: $(OBJECTS_DIR)/merged_padded_spacing.lef $(RESULTS_DIR)/4_cts.def $(RESULTS_DIR)/route.guide
+	echo "lef:$(OBJECTS_DIR)/merged_padded_spacing.lef" > $@
 	echo "def:$(RESULTS_DIR)/4_cts.def" >> $@
 	echo "guide:$(RESULTS_DIR)/route.guide" >> $@
 	echo "output:$(RESULTS_DIR)/5_route.def" >> $@
@@ -496,11 +499,18 @@ clean_finish:
 # This cleans all designs + tech
 #-------------------------------------------------------------------------------
 clean_all: clean_synth clean_floorplan clean_place clean_cts clean_route clean_finish
-	rm -rf ./results ./logs ./reports ./objects ./tech
+	rm -rf ./results ./logs ./reports ./objects
 	rm -rf ./POST9.dat ./PORT9.dat ./POWV9.dat
 	rm -rf ../etc/POST9.dat ../etc/PORT9.dat ../etc/POWV9.dat
 	rm -rf layer_*.mps macrocell.list *best.plt *_pdn.def dummy.guide run.param
 	rm -rf *.rpt *.def.v innovus.*
+
+clean:
+	@echo
+	@echo "Make clean disabled."
+	@echo "Use make clean_all or clean individual steps:"
+	@echo "  clean_synth clean_floorplan clean_place clean_cts clean_route clean_finish"
+	@echo
 
 # Open any def file using innovus
 #-------------------------------------------------------------------------------

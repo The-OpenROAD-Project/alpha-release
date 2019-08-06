@@ -9,7 +9,7 @@ drc off
 snap int
 
 # Read tech lef
-lef read $::env(TECH_DIR)/merged.lef
+lef read $::env(OBJECTS_DIR)/merged.lef
 
 
 # Read gds files
