@@ -37,9 +37,10 @@ resize -resize -repair_max_cap  \
        -dont_use $dont_use_cells
 
 # final report
-report_checks > $::env(REPORTS_DIR)/checks_resize.rpt
-report_tns > $::env(REPORTS_DIR)/tns_resize.rpt
-report_wns > $::env(REPORTS_DIR)/wns_resize.rpt
+report_checks > $::env(REPORTS_DIR)/3_resize_checks.rpt
+report_tns > $::env(REPORTS_DIR)/3_resize_tns.rpt
+report_wns > $::env(REPORTS_DIR)/3_resize_wns.rpt
+report_design_area
 
 # write output
 write_def $::env(RESULTS_DIR)/3_2_place_resized.def

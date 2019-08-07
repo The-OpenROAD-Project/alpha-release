@@ -123,12 +123,18 @@ synth: $(RESULTS_DIR)/1_synth.v \
 
 # Run Synthesis using yosys
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/1_synth.v:  $(OBJECTS_DIR)/merged.lib
+$(RESULTS_DIR)/1_1_yosys.v:  $(OBJECTS_DIR)/merged.lib
 	@$(call BANNER, 1. SYNTHESIS)
 	mkdir -p $(RESULTS_DIR) $(LOG_DIR) $(REPORTS_DIR)
 	yosys -l $(LOG_DIR)/1_yosys.log -c scripts/synth.tcl
 
-$(RESULTS_DIR)/1_synth.sdc: $(SDC_FILE)
+$(RESULTS_DIR)/1_2_buffer.v: $(RESULTS_DIR)/1_1_yosys.v $(SDC_FILE) | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
+	resizer $(SCRIPTS_DIR)/buffer.tcl \
+	        2>&1 | tee $(LOG_DIR)/1_2_buffer.log
+	@! grep --color "Error:" $(LOG_DIR)/1_2_buffer.log
+
+
+$(RESULTS_DIR)/1_synth.v: $(RESULTS_DIR)/1_2_buffer.v
 	cp $< $@
 
 clean_synth:
@@ -523,6 +529,7 @@ $(foreach def,$(notdir $(wildcard $(RESULTS_DIR)/*.def)),debug_$(def)): debug_%:
 # run designs using gnu parallel
 #-------------------------------------------------------------------------------
 parallel:
+	mkdir -p ./logs
 	parallel --sshloginfile parallelNodes.txt \
 	         --timeout 21600 \
 	         --workdir `pwd` < parallelScript.txt \

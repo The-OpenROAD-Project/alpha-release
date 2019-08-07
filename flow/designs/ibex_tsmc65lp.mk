@@ -9,8 +9,8 @@ export LIB_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/lib/*.lib))
 export GDS_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/gds/*.gds2))
 
 # These values must be multiples of placement site
-export DIE_AREA    = 0	0	950	650.4
-export CORE_AREA   = 10	12	940	640.8
+export DIE_AREA    = 0 0 950 650.4
+export CORE_AREA   = 10 12 940 640.8
 export CORE_WIDTH  = 930
 export CORE_HEIGHT = 628.8
 

@@ -34,24 +34,16 @@ hierarchy -generate tsmc65lp_* o:Q o:QA o:QB \
                                i:DFTRAMBYP i:PGEN i:KEN i:BEN i:TQ
 
 # generic synthesis
-synth  -top $::env(DESIGN_NAME)
-
-# Flatten the design
-flatten
+synth  -top $::env(DESIGN_NAME) -flatten
 
 # Optimize the design
 opt
-
-
-# replace undef values with defined constants
-setundef -zero
-clean
+opt_clean -purge
 
 
 # technology mapping of flip-flops
 dfflibmap -liberty $::env(OBJECTS_DIR)/merged.lib
 opt
-
 
 # Technology mapping for cells
 abc -D [expr $::env(CLOCK_PERIOD) * 1000] \
@@ -63,21 +55,22 @@ abc -D [expr $::env(CLOCK_PERIOD) * 1000] \
 # technology mapping of constant hi- and/or lo-drivers
 hilomap -hicell {*}$::env(TIEHI_CELL_AND_PORT) -locell {*}$::env(TIELO_CELL_AND_PORT)
 
+# replace undef values with defined constants
+setundef -zero
+
 # Splitting nets resolves unwanted compound assign statements ( assign {..} = {..})
 splitnets -ports; opt
 
 # insert buffer cells for pass through wires
 insbuf -buf {*}$::env(MIN_BUF_CELL_AND_PORTS)
 
-
 # remove unused cells and wires
 clean
 opt_clean -purge
-
 
 # reports
 tee -o $::env(REPORTS_DIR)/synth_check.txt check
 tee -o $::env(REPORTS_DIR)/synth_stat.txt stat -liberty $::env(OBJECTS_DIR)/merged.lib
 
 # write synthesized design
-write_verilog -noattr -noexpr -nohex -nodec $::env(RESULTS_DIR)/1_synth.v
+write_verilog -noattr -noexpr -nohex -nodec $::env(RESULTS_DIR)/1_1_yosys.v
