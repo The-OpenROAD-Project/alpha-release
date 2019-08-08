@@ -18,13 +18,20 @@ if {[info exist ::env(VERILOG_INCLUDE_DIRS)]} {
 
 # read verilog files
 foreach file $::env(VERILOG_FILES) {
-  read_verilog {*}$vIdirsArgs $file
+  read_verilog -defer {*}$vIdirsArgs $file
 }
 
 
 # Read blackbox stubs of standard cells. This allows for standard cell (or
 # structural netlist) support in the input verilog
 read_verilog $::env(BLACKBOX_V_FILE)
+
+# Apply toplevel parameters (if exist)
+if {[info exist ::env(VERILOG_TOP_PARAMS)]} {
+  dict for {key value} $::env(VERILOG_TOP_PARAMS) {
+    chparam -set $key $value $::env(DESIGN_NAME)
+  }
+}
 
 
 # Use hierarchy to automatically generate blackboxes for known memory macro.
