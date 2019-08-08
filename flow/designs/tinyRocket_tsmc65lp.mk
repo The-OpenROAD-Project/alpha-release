@@ -1,8 +1,8 @@
 export DESIGN_NAME = RocketTile
 export PLATFORM    = tsmc65lp
 
-export VERILOG_FILES = ./designs/src/tinyRocket/design.v
-export SDC_FILE      = ./designs/src/tinyRocket/design.sdc
+export VERILOG_FILES = $(wildcard ./designs/src/tinyRocket/*.v)
+export SDC_FILE      = ./designs/src/tinyRocket/RocketTile.sdc
 
 export MERGED_LEF = ./platforms/tsmc65lp/merged.lef
 export LIB_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/lib/*.lib))

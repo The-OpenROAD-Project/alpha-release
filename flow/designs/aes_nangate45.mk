@@ -1,8 +1,8 @@
 export DESIGN_NAME = aes_cipher_top
 export PLATFORM    = nangate45
 
-export VERILOG_FILES = ./designs/src/aes/design.v
-export SDC_FILE      = ./designs/src/aes/design.sdc
+export VERILOG_FILES = $(wildcard ./designs/src/aes/*.v)
+export SDC_FILE      = ./designs/src/aes/aes_cipher_top.sdc
 
 export MERGED_LEF = ./platforms/nangate45/NangateOpenCellLibrary.mod.lef
 export LIB_FILES  = ./platforms/nangate45/NangateOpenCellLibrary_typical.lib
