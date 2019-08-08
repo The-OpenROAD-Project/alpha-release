@@ -345,7 +345,7 @@ foreach netObj $highFanoutNetObjs {
 }
 
 
-
+puts "\nSaving verilog+sdc..."
 write_verilog $::env(RESULTS_DIR)/1_2_buffer.v
 write_sdc $::env(RESULTS_DIR)/1_synth.sdc
 

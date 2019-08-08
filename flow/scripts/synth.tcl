@@ -6,9 +6,19 @@ set gl_ext      "_gl.v"
 set abc_script  "+read_constr,$::env(SDC_FILE);strash;ifraig;retime,-D,{D},-M,6;strash;dch,-f;map,-p,-M,1,{D},-f;topo;dnsize;buffer,-p;upsize;"
 
 
+# Setup verilog include directories
+set vIdirsArgs ""
+if {[info exist ::env(VERILOG_INCLUDE_DIRS)]} {
+  foreach dir $::env(VERILOG_INCLUDE_DIRS) {
+    lappend vIdirsArgs "-I$dir"
+  }
+  set vIdirsArgs [join $vIdirsArgs]
+}
+
+
 # read verilog files
 foreach file $::env(VERILOG_FILES) {
-  read_verilog $file
+  read_verilog {*}$vIdirsArgs $file
 }
 
 

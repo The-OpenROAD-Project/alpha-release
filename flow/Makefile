@@ -6,6 +6,7 @@
 # DESIGN_CONFIG=./designs/dynamic_node_nangate45.mk
 # DESIGN_CONFIG=./designs/gcd_nangate45.mk
 # DESIGN_CONFIG=./designs/ibex_nangate45.mk
+# DESIGN_CONFIG=./designs/swerv_nangate45.mk
 
 # DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/ariane_tsmc65lp.mk
@@ -138,7 +139,7 @@ $(RESULTS_DIR)/1_synth.v: $(RESULTS_DIR)/1_2_buffer.v
 	cp $< $@
 
 clean_synth:
-	rm -rf $(RESULTS_DIR)/1_synth*.v $(RESULTS_DIR)/1_synth.sdc
+	rm -rf $(RESULTS_DIR)/1_*.v $(RESULTS_DIR)/1_synth.sdc
 	rm -rf _tmp_yosys-abc-*
 
 
