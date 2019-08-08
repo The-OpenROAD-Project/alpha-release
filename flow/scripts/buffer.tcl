@@ -6,9 +6,10 @@ foreach libFile $::env(LIB_FILES) {
 # Read verilog
 read_verilog $::env(RESULTS_DIR)/1_1_yosys.v
 
+# Link the design
 link_design $::env(DESIGN_NAME)
 
-# Read lef def and sdc
+# Read sdc
 read_sdc $::env(SDC_FILE)
 
 
@@ -163,7 +164,12 @@ foreach net [get_nets *] {
 }
 
 # Remove clock from list
-set idx [lsearch $highFanoutNetObjs [get_nets $::env(CLOCK_PORT)]]
+set clkNetObj [get_nets $::env(CLOCK_PORT)]
+if {$clkNetObj == ""} {
+  puts "Error: Cannot find toplevel clock net - $::env(CLOCK_PORT). Check design configuration"
+  exit -1
+}
+set idx [lsearch $highFanoutNetObjs $clkNetObj]
 set highFanoutNetObjs [lreplace $highFanoutNetObjs $idx $idx]
 
 
