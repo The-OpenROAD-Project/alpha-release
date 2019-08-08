@@ -34,3 +34,16 @@ To run a test:
 ```
 make DESIGN_NAME=SmallPinCount DESIGN_CONFIG=`pwd`/designs/tiny-tests.mk
 ```
+
+## nangate45 smoke-test harness for top level Verilog designs
+
+1. Drop your Verilog files into designs/src/harness
+2. Start the workflow:
+
+```
+make DESIGN_NAME=TopLevelName DESIGN_CONFIG=`pwd`/designs/harness.mk
+```
+
+TIP! Start with a small tiny submodule in your design with few pins
+
+
