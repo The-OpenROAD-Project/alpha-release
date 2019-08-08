@@ -1,8 +1,8 @@
 export DESIGN_NAME = gcd
 export PLATFORM    = nangate45
 
-export VERILOG_FILES = ./designs/src/gcd/design.v
-export SDC_FILE      = ./designs/src/gcd/design.sdc
+export VERILOG_FILES = ./designs/src/gcd/gcd.v
+export SDC_FILE      = ./designs/src/gcd/gcd.sdc
 
 export MERGED_LEF = ./platforms/nangate45/NangateOpenCellLibrary.mod.lef
 export LIB_FILES  = ./platforms/nangate45/NangateOpenCellLibrary_typical.lib

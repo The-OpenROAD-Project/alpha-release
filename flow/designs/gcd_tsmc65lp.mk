@@ -1,8 +1,8 @@
 export DESIGN_NAME = gcd
 export PLATFORM    = tsmc65lp
 
-export VERILOG_FILES = ./designs/src/gcd/design.v
-export SDC_FILE      = ./designs/src/gcd/design.sdc
+export VERILOG_FILES = ./designs/src/gcd/gcd.v
+export SDC_FILE      = ./designs/src/gcd/gcd.sdc
 
 export MERGED_LEF = ./platforms/tsmc65lp/merged.lef
 export LIB_FILES  = $(sort $(wildcard ./platforms/tsmc65lp/lib/*.lib))
