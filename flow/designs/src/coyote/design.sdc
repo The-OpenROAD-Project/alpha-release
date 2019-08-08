@@ -5,7 +5,7 @@
 ###################################################################
 set sdc_version 2.0
 
-set_units -time ns -resistance kOhm -capacitance pF -voltage V -current mA
+set_units -time ns
 set_max_fanout 10 [current_design]
 set_max_transition 0.1 [current_design]
 set_logic_zero [get_ports {rocc_resp_data_i[data][63]}]

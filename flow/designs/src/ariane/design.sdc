@@ -5,7 +5,7 @@
 ###################################################################
 set sdc_version 2.0
 
-set_units -time ns -resistance kOhm -capacitance pF -voltage V -current mA
+set_units -time ns
 create_clock [get_ports clk_i]  -name core_clock  -period 5.6  -waveform {0 2.8}
 set_input_delay -clock core_clock  0  [get_ports clk_i]
 set_input_delay -clock core_clock  0  [get_ports rst_ni]

@@ -5,7 +5,7 @@
 ###################################################################
 set sdc_version 2.0
 
-set_units -time ns -resistance kOhm -capacitance pF -voltage V -current mA
+set_units -time ns
 set_max_fanout 12 [current_design]
 set_max_transition 0.1 [current_design]
 set_load -pin_load 3 [get_ports {link_out_88[4]}]

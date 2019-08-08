@@ -5,7 +5,7 @@
 ###################################################################
 set sdc_version 2.0
 
-set_units -time ns -resistance kOhm -capacitance pF -voltage V -current mA
+set_units -time ns
 create_clock [get_ports gclk]  -period 8.4  -waveform {0 3}
 set_input_delay -clock gclk  -max 1.8  [get_ports gclk]
 set_input_delay -clock gclk  -min 1.32  [get_ports gclk]
