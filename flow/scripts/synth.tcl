@@ -18,7 +18,7 @@ if {[info exist ::env(VERILOG_INCLUDE_DIRS)]} {
 
 # read verilog files
 foreach file $::env(VERILOG_FILES) {
-  read_verilog -defer {*}$vIdirsArgs $file
+  read_verilog {*}$vIdirsArgs $file
 }
 
 
@@ -75,8 +75,8 @@ hilomap -hicell {*}$::env(TIEHI_CELL_AND_PORT) -locell {*}$::env(TIELO_CELL_AND_
 # replace undef values with defined constants
 setundef -zero
 
-# Splitting nets resolves unwanted compound assign statements ( assign {..} = {..})
-splitnets -ports; opt
+# Splitting nets resolves unwanted compound assign statements in netlist (assign {..} = {..})
+splitnets ; opt
 
 # insert buffer cells for pass through wires
 insbuf -buf {*}$::env(MIN_BUF_CELL_AND_PORTS)
