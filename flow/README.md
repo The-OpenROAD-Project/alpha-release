@@ -19,3 +19,18 @@ The flow runs all of the steps sequentially to achieve Verilog to GDS. There is 
 Once the platform is setup. Create a new design configuration with information about the design.  See sample configurations in the `design` directory
 
 Also refer to the [known issues and limitations documents](docs/Known%20Issues%20and%20Limitations.pdf) for information on conditioning your design/files for the flow
+
+## tiny-tests - easy to add, single concern, single Verilog file
+
+The tiny-tests are have been designed with two design goals in mind:
+
+1. It should be trivial to add a new test: simply add a tiny standalone
+   Verilog file to alpha-release/flow/designs/src/tiny-tests
+2. Each test should be as small and as standalone as possible and be a single
+   concern test.
+
+To run a test:
+
+```
+make DESIGN_NAME=SmallPinCount DESIGN_CONFIG=`pwd`/designs/tiny-tests.mk
+```
