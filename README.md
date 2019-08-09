@@ -43,5 +43,5 @@ At this time we are focused on overhauling the build process, build testing, and
 The alpha-release repository (build and run scripts) has a BSD 3-Clause License. The flow relies on several tools, platforms and designs that each have their own licenses:
 - Find the tool license at: `build/docker/{tool}/`
 - Find the platform license at: `flow/platforms/{platform}/`
-- Find the design license at: `flow/designs/src/{platform}/`
+- Find the design license at: `flow/designs/src/{design}/`
 
