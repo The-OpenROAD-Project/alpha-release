@@ -2,6 +2,7 @@ set -o pipefail; make DESIGN_CONFIG=./designs/aes_nangate45.mk 2>&1 | tee ./logs
 set -o pipefail; make DESIGN_CONFIG=./designs/dynamic_node_nangate45.mk 2>&1 | tee ./logs/dynamic_node_nangate45.log
 set -o pipefail; make DESIGN_CONFIG=./designs/gcd_nangate45.mk 2>&1 | tee ./logs/gcd_nangate45.log
 set -o pipefail; make DESIGN_CONFIG=./designs/ibex_nangate45.mk 2>&1 | tee ./logs/ibex_nangate45.log
+set -o pipefail; make DESIGN_CONFIG=./designs/swerv_nangate45.mk 2>&1 | tee ./logs/swerv_tsmc65lp.log
 set -o pipefail; make DESIGN_CONFIG=./designs/aes_tsmc65lp.mk 2>&1 | tee ./logs/aes_tsmc65lp.log
 set -o pipefail; make DESIGN_CONFIG=./designs/ariane_tsmc65lp.mk 2>&1 | tee ./logs/ariane_tsmc65lp.log
 set -o pipefail; make DESIGN_CONFIG=./designs/bp_fe_top_tsmc65lp.mk 2>&1 | tee ./logs/bp_fe_top_tsmc65lp.log
