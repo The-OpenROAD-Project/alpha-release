@@ -34,7 +34,8 @@ build-final: build-% : ./export/Dockerfile
 	mkdir -p logs/docker
 	export DOCKER_BUILDKIT=1; \
 	  VERSION=$(subst .tar.gz,,$(subst export/OpenROAD-,,$(wildcard export/OpenROAD-*.tar.gz))); \
-	  docker build $(DOCKER_BUILD_OPTS) --build-arg VERSION=$$VERSION -t $* ./export | tee logs/docker/$*.build.txt
+	  docker build $(DOCKER_BUILD_OPTS) --build-arg VERSION=$$VERSION -t openroad/alpha-release:$$VERSION ./export | tee logs/docker/$*.build.txt
+	  docker tag openroad/alpha-release openroad/alpha-release:latest
 
 $(TOOL_RUN_TARGETS): run-% :
 	docker run $(DOCKER_RUN_OPTS) $*
