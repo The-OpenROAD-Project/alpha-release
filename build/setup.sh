@@ -18,12 +18,6 @@ else
   export PATH=${modroot}/bin:${modroot}/bin/Linux-x86_64:${modroot}/pdn/scripts
 fi
 
-if [ -n "${LD_LIBRARY_PATH}" ]; then
-  export LD_LIBRARY_PATH=${modroot}/lib:${modroot}/lib/Linux-x86_64:$LD_LIBRARY_PATH
-else
-  export LD_LIBRARY_PATH=${modroot}/lib:${modroot}/lib/Linux-x86_64
-fi
-
 if [ -n "${MANPATH}" ]; then
   export MANPATH=${modroot}/share/man:$MANPATH
 else

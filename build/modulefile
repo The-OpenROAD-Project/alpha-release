@@ -19,6 +19,5 @@ conflict OpenROAD
 setenv         OPENROAD    $modroot
 
 prepend-path   PATH            $modroot/bin:$modroot/bin/Linux-x86_64:$modroot/pdn/scripts
-prepend-path   LD_LIBRARY_PATH $modroot/lib:$modroot/lib/Linux-x86_64
 prepend-path   MANPATH         $modroot/share/man
 setenv         TCLLIBPATH      $modroot/pdn/scripts

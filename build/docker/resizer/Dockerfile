@@ -36,6 +36,14 @@ RUN wget https://www.davidkebo.com/source/cudd_versions/cudd-3.0.0.tar.gz && \
 # get Resizer
 RUN git clone --recursive https://github.com/The-OpenROAD-Project/Resizer.git
 
+# Workaround for issue https://github.com/The-OpenROAD-Project/Resizer/issues/5
+WORKDIR Resizer
+RUN git checkout 98568f271339bf0c83df5c5835c3d8d1f8c33917
+WORKDIR module/OpenSTA
+RUN git checkout 73fef1117e973efde68b1d39c6adabf5c83f6417
+WORKDIR /
+# End Workaround
+
 WORKDIR Resizer
 
 COPY resizer.patch .
@@ -44,7 +52,7 @@ RUN git apply resizer.patch
 
 RUN mkdir build
 WORKDIR build
-RUN cmake -DCMAKE_INSTALL_PREFIX=/build -DCMAKE_BUILD_TYPE=DEBUG -DCUDD=/usr/local ..
+RUN cmake -DCMAKE_INSTALL_PREFIX=/build -DCUDD=/usr/local ..
 
 RUN make
 
