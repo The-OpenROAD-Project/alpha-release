@@ -1,3 +1,11 @@
+The alpha-release repository (build and run scripts) have a BSD 3-Clause License with its text below.
+The flow relies on several tools, platforms and designs that each have their own licenses.
+
+The license below applies ***only*** to the build and run scripts, not the code upon which the alpha release binaries depend.
+See the README.md file LICENSE section for details on the location of each components' individual license.
+
+License for Build and Run scripts in the alpha-release repo only :
+
 BSD 3-Clause License
 
 Copyright (c) 2018, The Regents of the University of California
