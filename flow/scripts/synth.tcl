@@ -57,6 +57,8 @@ synth  -top $::env(DESIGN_NAME) -flatten
 opt
 opt_clean -purge
 
+# technology mapping of latches
+techmap -map $::env(LATCH_MAP_FILE)
 
 # technology mapping of flip-flops
 dfflibmap -liberty $::env(OBJECTS_DIR)/merged.lib

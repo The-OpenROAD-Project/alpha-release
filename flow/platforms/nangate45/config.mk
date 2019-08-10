@@ -16,6 +16,10 @@ export MAX_FANOUT = 100
 # List all standard cells and cells yosys should treat as blackboxes here
 export BLACKBOX_V_FILE = ./platforms/nangate45/NangateOpenCellLibrary.blackbox.v
 
+# Latch mapping file
+# Yosys latch mapping file
+export LATCH_MAP_FILE = ./platforms/nangate45/cells_latch.v
+
 # Placement site for core cells
 # This can be found in the technology lef
 export PLACE_SITE = FreePDK45_38x28_10R_NP_162NW_34O
@@ -26,7 +30,7 @@ export TRACKS_INFO_FILE = ./platforms/nangate45/tracks.info
 # Cell padding in microns to ease rout-ability
 export CELL_PAD_IN_MICRON = 1.0
 
-# Wndcap and Welltie cells
+# Endcap and Welltie cells
 # Use fillers if kit doesn't have them
 export ENDCAP_CELL   = FILLCELL_X1
 export WELLTIE_CELL  = FILLCELL_X1
@@ -37,11 +41,11 @@ export CTS_DUMMY_CELL = BUF_X1
 export CTS_BUF_CELL   = BUF_X4
 export CTS_TECH_DIR   = ./platforms/nangate45/tritonCTS
 
-# RC information for the placer
+# Primarily used by Replace Typically F and Ohm)
 export CAP_PER_MICRON = 0.235146e-12
 export RES_PER_MICRON = 1.59
 
-# RC information for the sizer
+# Primarily used by Resizer (Typically pF and kOhm)
 export CAP_UNIT_PER_MICRON    = 0.00020
 export RES_UNIT_PER_MICRON    = 0.0020
 export RESIZER_BUF_CELL = BUF_X4
