@@ -11,6 +11,7 @@
 # DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/ariane_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/bp_fe_top_tsmc65lp.mk
+DESIGN_CONFIG=./designs/cep_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/coyote_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/dynamic_node_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/gcd_tsmc65lp.mk
@@ -52,6 +53,7 @@ export REPORTS_DIR = ./reports/$(PLATFORM)/$(DESIGN_NAME)
 export RESULTS_DIR = ./results/$(PLATFORM)/$(DESIGN_NAME)
 
 export SCRIPTS_DIR = ./scripts
+export TEST_DIR    = ./test
 
 # Tool Options
 SHELL = /bin/bash -o pipefail
@@ -124,10 +126,12 @@ synth: $(RESULTS_DIR)/1_synth.v \
 
 # Run Synthesis using yosys
 #-------------------------------------------------------------------------------
+SYNTH_SCRIPT ?= scripts/synth.tcl
+
 $(RESULTS_DIR)/1_1_yosys.v:  $(OBJECTS_DIR)/merged.lib
 	@$(call BANNER, 1. SYNTHESIS)
 	mkdir -p $(RESULTS_DIR) $(LOG_DIR) $(REPORTS_DIR)
-	yosys -l $(LOG_DIR)/1_yosys.log -c scripts/synth.tcl
+	yosys -l $(LOG_DIR)/1_yosys.log -c $(SYNTH_SCRIPT)
 
 $(RESULTS_DIR)/1_2_buffer.v: $(RESULTS_DIR)/1_1_yosys.v $(SDC_FILE) | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
 	resizer $(SCRIPTS_DIR)/buffer.tcl \
@@ -339,7 +343,7 @@ $(RESULTS_DIR)/3_3_place_dp.def: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)
 	opendp -lef $(OBJECTS_DIR)/merged_padded.lef \
 	       -def $(RESULTS_DIR)/3_2_place_resized.def \
 	       -output_def $@ \
-	       2>&1 | tee $(LOG_DIR)/3_3_RePlAce.log
+	       2>&1 | tee $(LOG_DIR)/3_3_opendp.log
 
 $(RESULTS_DIR)/3_place.def: $(RESULTS_DIR)/3_3_place_dp.def
 	cp $< $@
@@ -502,22 +506,22 @@ clean_finish:
 # ==============================================================================
 
 
-
-# This cleans all designs + tech
-#-------------------------------------------------------------------------------
-clean_all: clean_synth clean_floorplan clean_place clean_cts clean_route clean_finish
-	rm -rf ./results ./logs ./reports ./objects
-	rm -rf ./POST9.dat ./PORT9.dat ./POWV9.dat
-	rm -rf ../etc/POST9.dat ../etc/PORT9.dat ../etc/POWV9.dat
-	rm -rf layer_*.mps macrocell.list *best.plt *_pdn.def dummy.guide run.param
-	rm -rf *.rpt *.def.v innovus.*
-
 clean:
 	@echo
 	@echo "Make clean disabled."
 	@echo "Use make clean_all or clean individual steps:"
 	@echo "  clean_synth clean_floorplan clean_place clean_cts clean_route clean_finish"
 	@echo
+
+clean_all: clean_synth clean_floorplan clean_place clean_cts clean_route clean_finish
+
+nuke:
+	rm -rf ./results ./logs ./reports ./objects
+	rm -rf ./POST9.dat ./PORT9.dat ./POWV9.dat
+	rm -rf ../etc/POST9.dat ../etc/PORT9.dat ../etc/POWV9.dat
+	rm -rf layer_*.mps macrocell.list *best.plt *_pdn.def dummy.guide run.param
+	rm -rf *.rpt *.def.v innovus.*
+
 
 # Open any def file using innovus
 #-------------------------------------------------------------------------------
@@ -527,11 +531,11 @@ $(foreach def,$(notdir $(wildcard $(RESULTS_DIR)/*.def)),debug_$(def)): debug_%:
 	                  win" \
 	                  -no_logv ; stty sane
 
-# run designs using gnu parallel
+# run test using gnu parallel
 #-------------------------------------------------------------------------------
-parallel:
-	mkdir -p ./logs
-	parallel --sshloginfile parallelNodes.txt \
+TEST_SCRIPT ?= $(TEST_DIR)/tiny_tests.sh
+run_test:
+	parallel --sshloginfile $(TEST_DIR)/nodes.txt \
 	         --timeout 21600 \
-	         --workdir `pwd` < parallelScript.txt \
-	         --joblog parallel.log
+	         --workdir `pwd` < $(TEST_SCRIPT) \
+	         --joblog $(TEST_DIR)/parallel.log
