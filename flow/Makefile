@@ -11,7 +11,6 @@
 # DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/ariane_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/bp_fe_top_tsmc65lp.mk
-DESIGN_CONFIG=./designs/cep_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/coyote_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/dynamic_node_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/gcd_tsmc65lp.mk
@@ -480,8 +479,13 @@ clean_route:
 # |  _|  | || |\  || | ___) |  _  || || |\  | |_| |
 # |_|   |___|_| \_|___|____/|_| |_|___|_| \_|\____|
 #
-finish: $(RESULTS_DIR)/6_final.gds
+finish: $(RESULTS_DIR)/6_final.gds \
+        $(REPORTS_DIR)/6_final_report.rpt
 # ==============================================================================
+$(REPORTS_DIR)/6_final_report.rpt:
+	resizer $(SCRIPTS_DIR)/final_report.tcl \
+	        2>&1 | tee $(LOG_DIR)/6_1_report.log
+
 
 # Run magic
 #-------------------------------------------------------------------------------
@@ -492,7 +496,7 @@ $(RESULTS_DIR)/6_final.gds: $(MAGIC_TECH_FILE) $(GDS_FILES) $(RESULTS_DIR)/5_rou
 
 clean_finish:
 	rm -rf $(RESULTS_DIR)/6_final.gds
-
+	rm -rf $(REPORTS_DIR)/6_*.rpt
 
 
 

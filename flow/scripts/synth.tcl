@@ -54,8 +54,7 @@ hierarchy -generate tsmc65lp_* o:Q o:QA o:QB \
 synth  -top $::env(DESIGN_NAME) -flatten
 
 # Optimize the design
-opt
-opt_clean -purge
+opt -purge
 
 # technology mapping of latches
 techmap -map $::env(LATCH_MAP_FILE)
@@ -78,13 +77,12 @@ hilomap -hicell {*}$::env(TIEHI_CELL_AND_PORT) -locell {*}$::env(TIELO_CELL_AND_
 setundef -zero
 
 # Splitting nets resolves unwanted compound assign statements in netlist (assign {..} = {..})
-splitnets ; opt
+splitnets
 
 # insert buffer cells for pass through wires
 insbuf -buf {*}$::env(MIN_BUF_CELL_AND_PORTS)
 
 # remove unused cells and wires
-clean
 opt_clean -purge
 
 # reports
