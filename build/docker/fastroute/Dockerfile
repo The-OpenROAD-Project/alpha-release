@@ -36,7 +36,7 @@ RUN yum install -y  qt5-qtbase-devel
 # download public key for github.com
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-RUN git clone https://github.com/The-OpenROAD-Project/FastRoute4-lefdef.git
+RUN git clone --recursive https://github.com/The-OpenROAD-Project/FastRoute4-lefdef.git
 
 RUN mkdir /FastRoute4-lefdef/build
 WORKDIR /FastRoute4-lefdef/build

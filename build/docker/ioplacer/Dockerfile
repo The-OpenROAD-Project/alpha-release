@@ -26,11 +26,12 @@ RUN wget https://cmake.org/files/v3.9/cmake-3.9.0-Linux-x86_64.sh && \
     chmod +x cmake-3.9.0-Linux-x86_64.sh  && \
     ./cmake-3.9.0-Linux-x86_64.sh --skip-license --prefix=/usr/local
 
+RUN yum install -y zlib-devel
 
 # download public key for github.com
 RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-RUN git clone https://github.com/The-OpenROAD-Project/ioPlacer.git
+RUN git clone --recursive https://github.com/The-OpenROAD-Project/ioPlacer.git
 
 
 # RUN make release
