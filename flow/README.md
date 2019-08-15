@@ -9,18 +9,24 @@ git clone https://github.com/The-OpenROAD-Project/alpha-release
 cd alpha-release/flow
 ```
 2. An OpenROAD release must be setup to run the tests. More info in the build [README](../build/README.md)
-3. Update the top of the Makefile to point to a design configuration file. Sample desgin configurations are available in the `designs` directory.
-4. Run `make` to peform verilog to gds
+3. Run `make` to peform verilog to gds. This will run the default gcd_nangate45 test which runs very quickly
+
+## Selecting a testcase
+Sample desgin configurations are available in the `designs` directory. After running the default test to validate, you can select a new test using either of the following methods:
+1. Update the top of the Makefile to point to a design configuration file. Simply uncomment the testcase of interest to overwrite the default test
+2. When running any make commands, specify the design of interest. e.g. `make DESIGN_CONFIG=./designs/swerv_nangate45.mk`
+3. Export the `DESIGN_CONFIG` variable in your shell (e.g. `export DESIGN_CONFIG=./designs/swerv_nangate45.mk`) and all subsequent commands will use that design. 
 
 
-## Customizing for designs
-The flow runs all of the steps sequentially to achieve Verilog to GDS. There is an initial platform setup required in order to use the OpenROAD flow. This has already been performed for the FreePDK45, Nangate45 and TSMC65(under NDA so not in the alpha-release git repository) platforms. See sample platforms setup in the `platforms` directory.
+## Adding new platforms
+The flow runs all of the steps sequentially to achieve Verilog to GDS. There is an initial platform setup required in order to use the OpenROAD flow. This has already been performed for the Nangate45 and TSMC65LP (under NDA so not in the alpha-release git repository) platforms. See sample platforms setup in the `platforms` directory.
 
 Once the platform is setup. Create a new design configuration with information about the design.  See sample configurations in the `design` directory
 
 Also refer to the [known issues and limitations documents](docs/Known%20Issues%20and%20Limitations.pdf) for information on conditioning your design/files for the flow
 
-## tiny-tests - easy to add, single concern, single Verilog file
+## Miscellenous
+### tiny-tests - easy to add, single concern, single Verilog file
 
 The tiny-tests are have been designed with two design goals in mind:
 
@@ -35,7 +41,7 @@ To run a test:
 make DESIGN_NAME=SmallPinCount DESIGN_CONFIG=`pwd`/designs/tiny-tests.mk
 ```
 
-## nangate45 smoke-test harness for top level Verilog designs
+### nangate45 smoke-test harness for top level Verilog designs
 
 1. Drop your Verilog files into designs/src/harness
 2. Start the workflow:
