@@ -192,8 +192,7 @@ $(RESULTS_DIR)/2_2_floorplan_io.def: $(OBJECTS_DIR)/merged.lef $(RESULTS_DIR)/2_
 	         --output $@ \
 	         --hmetal 5 \
 	         --vmetal 6 \
-	         --random 1 \
-	         --force-spread 1 \
+	         --random 2 \
 	         --wirelen 1 \
 	         2>&1 | tee $(LOG_DIR)/2_2_ioPlacer.log
 
@@ -537,7 +536,7 @@ $(foreach def,$(notdir $(wildcard $(RESULTS_DIR)/*.def)),debug_$(def)): debug_%:
 
 # run test using gnu parallel
 #-------------------------------------------------------------------------------
-TEST_SCRIPT ?= $(TEST_DIR)/tiny_tests.sh
+TEST_SCRIPT ?= $(TEST_DIR)/core_tests.sh
 run_test:
 	parallel --sshloginfile $(TEST_DIR)/nodes.txt \
 	         --timeout 21600 \
