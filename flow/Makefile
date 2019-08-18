@@ -372,6 +372,7 @@ cts: $(RESULTS_DIR)/4_cts.def \
 # ------------------------------------------------------------------------------
 SKEW  = 50
 TOLER = 1000
+PERCENTILE = 0.075
 $(OBJECTS_DIR)/tritonCts.config: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/3_place.def
 	@$(call BANNER, 4. CTS)
 	mkdir -p $(OBJECTS_DIR)
@@ -387,6 +388,7 @@ $(OBJECTS_DIR)/tritonCts.config: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)
 	echo "db_units 2000" >> $@
 	echo "root_buff $(CTS_BUF_CELL)" >> $@
 	echo "toler $(TOLER)" >> $@
+	echo "percentile $(PERCENTILE)" >> $@ 
 
 
 # Run TritonCTS
