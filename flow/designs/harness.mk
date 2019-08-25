@@ -17,5 +17,6 @@ export CORE_AREA   = 20.14 22.4 880.46 882
 export CORE_WIDTH  = 860.32
 export CORE_HEIGHT = 859.6
 
-export CLOCK_PERIOD = 0.25
+# Start with 250MHz for nangate45, relatively conservative
+export CLOCK_PERIOD = 4
 export CLOCK_PORT   = clock
