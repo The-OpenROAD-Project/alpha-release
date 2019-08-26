@@ -25,3 +25,6 @@
 [submodule "module/TritonMacroPlace"]
 	path = module/TritonMacroPlace
 	url = https://github.com/The-OpenROAD-Project/TritonMacroPlace.git
+[submodule "module/ioPlacer"]
+	path = module/ioPlacer
+	url = https://github.com/The-OpenROAD-Project/ioPlacer.git
