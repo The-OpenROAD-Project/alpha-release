@@ -10,3 +10,6 @@
 [submodule "module/Resizer"]
 	path = module/Resizer
 	url = https://github.com/The-OpenROAD-Project/Resizer.git
+[submodule "module/RePlAce"]
+	path = module/RePlAce
+	url = https://github.com/The-OpenROAD-Project/RePlAce
