@@ -4,3 +4,6 @@
 [submodule "module/tapcell"]
 	path = module/tapcell
 	url = https://github.com/The-OpenROAD-Project/tapcell.git
+[submodule "module/TritonRoute"]
+	path = module/TritonRoute
+	url = https://github.com/The-OpenROAD-Project/TritonRoute.git
