@@ -22,3 +22,6 @@
 [submodule "module/magic"]
 	path = module/magic
 	url = https://github.com/The-OpenROAD-Project/magic.git
+[submodule "module/TritonMacroPlace"]
+	path = module/TritonMacroPlace
+	url = https://github.com/The-OpenROAD-Project/TritonMacroPlace.git
