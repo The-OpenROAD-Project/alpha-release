@@ -7,3 +7,6 @@
 [submodule "module/TritonRoute"]
 	path = module/TritonRoute
 	url = https://github.com/The-OpenROAD-Project/TritonRoute.git
+[submodule "module/Resizer"]
+	path = module/Resizer
+	url = https://github.com/The-OpenROAD-Project/Resizer.git
