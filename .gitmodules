@@ -1,0 +1,6 @@
+[submodule "module/yosys"]
+	path = module/yosys
+	url = https://github.com/The-OpenROAD-Project/yosys.git
+[submodule "module/tapcell"]
+	path = module/tapcell
+	url = https://github.com/The-OpenROAD-Project/tapcell.git
