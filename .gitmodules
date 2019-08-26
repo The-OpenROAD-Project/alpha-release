@@ -13,3 +13,6 @@
 [submodule "module/RePlAce"]
 	path = module/RePlAce
 	url = https://github.com/The-OpenROAD-Project/RePlAce
+[submodule "module/pdn"]
+	path = module/pdn
+	url = https://github.com/The-OpenROAD-Project/pdn.git
