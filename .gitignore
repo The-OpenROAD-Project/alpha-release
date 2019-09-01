@@ -1,3 +1,6 @@
+logs
+export
+
 # Build working directories
 build/export/*
 !build/export/Dockerfile
