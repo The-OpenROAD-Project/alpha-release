@@ -376,7 +376,7 @@ PERCENTILE = 0.075
 $(OBJECTS_DIR)/tritonCts.config: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/3_place.def
 	@$(call BANNER, 4. CTS)
 	mkdir -p $(OBJECTS_DIR)
-	echo "lef $(OBJECTS_DIR)/merged_padded.lef" >> $@
+	echo "lef $(OBJECTS_DIR)/merged_padded.lef" > $@
 	echo "path $(RESULTS_DIR)/3_place.def" >> $@
 	echo "verilog $(RESULTS_DIR)/3_place.v" >> $@
 	echo "design $(DESIGN_NAME)" >> $@
@@ -388,7 +388,7 @@ $(OBJECTS_DIR)/tritonCts.config: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)
 	echo "db_units 2000" >> $@
 	echo "root_buff $(CTS_BUF_CELL)" >> $@
 	echo "toler $(TOLER)" >> $@
-	echo "percentile $(PERCENTILE)" >> $@ 
+	echo "percentile $(PERCENTILE)" >> $@
 
 
 # Run TritonCTS
@@ -525,7 +525,7 @@ nuke:
 	rm -rf ./POST9.dat ./PORT9.dat ./POWV9.dat
 	rm -rf ../etc/POST9.dat ../etc/PORT9.dat ../etc/POWV9.dat
 	rm -rf layer_*.mps macrocell.list *best.plt *_pdn.def dummy.guide run.param
-	rm -rf *.rpt *.def.v innovus.*
+	rm -rf *.rpt *.def.v innovus.* pin_dumper.log
 
 
 # Open any def file using innovus
