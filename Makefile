@@ -8,7 +8,6 @@ TOOLS = yosys Resizer ioPlacer TritonMacroPlace RePlAce pdn tapcell OpenDP Trito
 # ==============================================================================
 TOOL_BUILD_TARGETS = $(foreach tool,$(TOOLS),build-$(tool))
 $(TOOL_BUILD_TARGETS): build-% : ./module/%/Dockerfile
-	mkdir -p logs/docker
 	docker build -t openroad/$(shell echo $* | tr A-Z a-z) module/$*
 
 build-tools: $(TOOL_BUILD_TARGETS)
@@ -16,16 +15,13 @@ build-tools: $(TOOL_BUILD_TARGETS)
 # ==============================================================================
 # EXPORT TOOLS
 # ==============================================================================
-TOOL_EXPORT_TARGETS = $(foreach tool,$(TOOLS),export-$(tool))
-$(TOOL_EXPORT_TARGETS): export-% :
+export-tools:
 	mkdir -p export
-	rm -rf export/$*
-	mkdir -p export/$*
-	id=$$(docker create openroad/$(shell echo $* | tr A-Z a-z)) ; \
-	  docker cp $$id:build/ export/$*/ ; \
-	  docker rm -v $$id
+	rm -rf export
 
-export-tools: $(TOOL_EXPORT_TARGETS)
+	# pdn
+	mkdir -p export/pdn
+	cp -r ./module/pdn/src/PdnPinDumper/build ./export/pdn/
 
 # ==============================================================================
 # PUBLISH TO DOCKER HUB

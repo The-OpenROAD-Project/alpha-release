@@ -1,12 +1,7 @@
-# syntax = docker/dockerfile:1.0-experimental
-FROM centos:centos6 as build
-MAINTAINER Mingyu woo "mwoo@eng.ucsd.edu"
-
-# Mostly copied from https://github.com/abk-openroad/RePlAce/blob/master/Dockerfile
-
+FROM openroad/centos6-tcl8.6 as builder
 
 # install base dependencies
-RUN yum install -y git tcl tk libjpeg libgomp libXext libSM libXft libffi cairo gettext
+RUN yum install -y git libjpeg libgomp libXext libSM libXft libffi cairo gettext
 
 # python 3.6
 RUN yum install -y install centos-release-scl
@@ -17,15 +12,7 @@ ENV PATH=/opt/rh/rh-python36/root/usr/bin:$PATH
 RUN pip3 install --upgrade pip && \
     pip3 install matplotlib
 
-# Install latest build
-# TODO: Would use add but there's a broken sym link in the package
-# ADD openroad /
-
-ARG VERSION
-
-COPY OpenROAD-$VERSION.tar.gz /
-RUN tar -xzf OpenROAD-$VERSION.tar.gz &&  \
-    rm -rf OpenROAD-$VERSION.tar.gz
+ARG VERSION=0.0.1
 
 ENV OPENROAD=/openroad/OpenROAD-$VERSION
 ENV OPENROADOS=Linux-x86_64

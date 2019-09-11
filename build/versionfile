@@ -1,5 +1,0 @@
-#%Module1.0##########################################################
-##
-## version file for OpenROAD
-##
-set ModulesVersion  "@TIMESTAMP@"
