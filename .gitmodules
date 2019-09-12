@@ -16,9 +16,6 @@
 [submodule "module/pdn"]
 	path = module/pdn
 	url = https://github.com/The-OpenROAD-Project/pdn.git
-[submodule "module/OpenDP"]
-	path = module/OpenDP
-	url = https://github.com/sanggido/OpenDP.git
 [submodule "module/magic"]
 	path = module/magic
 	url = https://github.com/The-OpenROAD-Project/magic.git
