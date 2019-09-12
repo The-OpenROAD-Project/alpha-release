@@ -31,3 +31,6 @@
 [submodule "module/OpenDP"]
 	path = module/OpenDP
 	url = https://github.com/The-OpenROAD-Project/OpenDP.git
+[submodule "module/Resizer"]
+	path = module/Resizer
+	url = https://github.com/The-OpenROAD-Project/Resizer.git
