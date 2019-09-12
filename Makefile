@@ -1,14 +1,16 @@
 # ==============================================================================
 # TOOLS DIRECTORIES
 # ==============================================================================
-TOOLS = yosys Resizer ioPlacer TritonMacroPlace RePlAce pdn tapcell OpenDP TritonCTS TritonRoute FastRoute4-lefdef magic       
+TOOLS = Resizer ioPlacer TritonMacroPlace RePlAce pdn tapcell OpenDP TritonRoute TritonCTS yosys
 
 # ==============================================================================
 # BUILD TOOLS
 # ==============================================================================
 TOOL_BUILD_TARGETS = $(foreach tool,$(TOOLS),build-$(tool))
 $(TOOL_BUILD_TARGETS): build-% : ./module/%/Dockerfile
-	docker build -t openroad/$(shell echo $* | tr A-Z a-z) module/$*
+	cd module/$* && \
+	./jenkins/build.sh && \
+	cd ../..
 
 build-tools: $(TOOL_BUILD_TARGETS)
 
@@ -19,9 +21,7 @@ export-tools:
 	mkdir -p export
 	rm -rf export
 
-	# pdn
-	mkdir -p export/pdn
-	cp -r ./module/pdn/src/PdnPinDumper/build ./export/pdn/
+	# TODO: export tools
 
 # ==============================================================================
 # PUBLISH TO DOCKER HUB

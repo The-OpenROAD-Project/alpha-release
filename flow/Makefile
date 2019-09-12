@@ -57,16 +57,10 @@ export TEST_DIR    = ./test
 # Tool Options
 SHELL = /bin/bash -o pipefail
 BANNER = printf "\e[31m" ; \
-         date ; \
-         figlet -c -p -d $(OPENROAD)/figlet/fonts/ $(1) ; \
-         printf "\e[0m" ; \
-         sleep 1 ;
-
-
-# Quick check to make sure OpenROAD tools are installed
-ifeq ("$(OPENROAD)","")
-  $(error ERROR: These tests require the OpenROAD tools to be setup.)
-endif
+		date ; \
+		$(1) ; \
+		printf "\e[0m" ; \
+		sleep 1 ;
 
 
 # Pre-process Lefs
@@ -94,20 +88,20 @@ $(OBJECTS_DIR)/merged.lib: $(DESIGN_LIB_FILES)
 # Link flute data files
 # ==============================================================================
 ./PORT9.dat:
-	ln -sf $(OPENROAD)/share/replace/$@ $@
+	ln -sf ../module/RePlAce/test/$@ $@
 ./POST9.dat:
-	ln -sf $(OPENROAD)/share/replace/$@ $@
+	ln -sf ../module/RePlAce/test/$@ $@
 ./POWV9.dat:
-	ln -sf $(OPENROAD)/share/replace/$@ $@
+	ln -sf ../module/RePlAce/test/$@ $@
 ../etc/PORT9.dat:
 	mkdir -p ../etc
-	ln -sf $(OPENROAD)/share/replace/PORT9.dat $@
+	ln -sf ../module/RePlAce/test/PORT9.dat $@
 ../etc/POST9.dat:
 	mkdir -p ../etc
-	ln -sf $(OPENROAD)/share/replace/POST9.dat $@
+	ln -sf ../module/RePlAce/test/POST9.dat $@
 ../etc/POWV9.dat:
 	mkdir -p ../etc
-	ln -sf $(OPENROAD)/share/replace/POWV9.dat $@
+	ln -sf ../module/RePlAce/test/POWV9.dat $@
 
 
 
@@ -394,13 +388,13 @@ $(OBJECTS_DIR)/tritonCts.config: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)
 # Run TritonCTS
 # ------------------------------------------------------------------------------
 $(RESULTS_DIR)/4_cts.v: $(OBJECTS_DIR)/tritonCts.config | ./PORT9.dat ./POST9.dat ./POWV9.dat
-	$(OPENROAD)/TritonCTS/runTritonCTS.tcl \
+	/openroad/module/TritonCTS/runTritonCTS.tcl \
 	  -configFilePath=$< \
-	  -scriptsPath=$(OPENROAD)/TritonCTS/scripts \
+	  -scriptsPath=/openroad/module/TritonCTS/src/scripts \
 	  -techFilesPath=$(CTS_TECH_DIR) \
-	  -lefDefParserPath=$(OPENROAD)/TritonCTS/bin/lefdef2cts \
-	  -executablePath=$(OPENROAD)/TritonCTS/bin/genHtree \
-	  -legalizerPath=$(OPENROAD)/bin/opendp \
+	  -lefDefParserPath=lefdef2cts \
+	  -executablePath=genHtree \
+	  -legalizerPath=opendp \
 	  -outputPath=$(RESULTS_DIR)/run 2>&1 | tee $(LOG_DIR)/4_tritonCTS.log
 	cp $(RESULTS_DIR)/run/final.v $@
 
