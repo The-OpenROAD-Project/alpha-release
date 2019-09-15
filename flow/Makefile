@@ -294,7 +294,7 @@ place: $(RESULTS_DIR)/3_place.def \
 $(RESULTS_DIR)/3_1_place_gp.def: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/2_floorplan.def $(RESULTS_DIR)/2_floorplan.v $(RESULTS_DIR)/2_floorplan.sdc | ./PORT9.dat ./POST9.dat ./POWV9.dat
 	@$(call BANNER, 3. PLACE)
 	rm -rf $(RESULTS_DIR)/etc/
-	RePlAce -bmflag etc \
+	replace -bmflag etc \
 	        -lef $(OBJECTS_DIR)/merged_padded.lef \
 	        -def $(RESULTS_DIR)/2_floorplan.def \
 	        -verilog $(RESULTS_DIR)/2_floorplan.v \
