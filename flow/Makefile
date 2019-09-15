@@ -195,7 +195,7 @@ $(RESULTS_DIR)/2_2_floorplan_io.def: $(OBJECTS_DIR)/merged.lef $(RESULTS_DIR)/2_
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/2_3_floorplan_tdms.def: $(RESULTS_DIR)/2_2_floorplan_io.def $(RESULTS_DIR)/1_synth.v $(RESULTS_DIR)/1_synth.sdc $(LIB_FILES) $(OBJECTS_DIR)/merged_padded.lef | ./PORT9.dat ./POST9.dat ./POWV9.dat
 ifeq ($(RUN_MACRO_PLACEMENT),1)
-	RePlAce \
+	replace \
 	  -bmflag etc \
 	  -lef $(OBJECTS_DIR)/merged_padded.lef \
 	  -def $(RESULTS_DIR)/2_2_floorplan_io.def  \
