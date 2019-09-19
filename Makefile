@@ -1,7 +1,7 @@
 # ==============================================================================
 # TOOLS DIRECTORIES
 # ==============================================================================
-TOOLS = Resizer ioPlacer TritonMacroPlace RePlAce pdn tapcell OpenDP TritonRoute TritonCTS yosys
+TOOLS = Resizer ioPlacer TritonMacroPlace RePlAce pdn tapcell OpenDP TritonRoute TritonCTS FastRoute4-lefdef yosys
 
 # ==============================================================================
 # BUILD TOOLS

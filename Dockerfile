@@ -28,6 +28,7 @@ ENV PATH=/openroad/module/OpenDP/build:$PATH
 ENV PATH=/openroad/module/TritonRoute/build:$PATH
 ENV PATH=/openroad/module/TritonCTS/bin:/openroad/module/TritonCTS/third_party:$PATH
 ENV PATH=/openroad/module/TritonCTS/src/scripts:/openroad/module/TritonCTS/src/tech:/openroad/module/TritonCTS:$PATH
+ENV PATH=/openroad/module/FastRoute4-lefdef/build/third_party/rsyn/bin:$PATH
 
 # Other stuff
 ARG VERSION=0.0.1
