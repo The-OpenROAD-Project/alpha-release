@@ -392,9 +392,9 @@ $(RESULTS_DIR)/4_cts.v: $(OBJECTS_DIR)/tritonCts.config | ./PORT9.dat ./POST9.da
 	  -configFilePath=$< \
 	  -scriptsPath=/openroad/module/TritonCTS/src/scripts \
 	  -techFilesPath=$(CTS_TECH_DIR) \
-	  -lefDefParserPath=lefdef2cts \
-	  -executablePath=genHtree \
-	  -legalizerPath=opendp \
+	  -lefDefParserPath=/openroad/module/TritonCTS/third_party/lefdef2cts \
+	  -executablePath=/openroad/module/TritonCTS/bin/genHtree \
+	  -legalizerPath=/openroad/module/OpenDP/build/opendp \
 	  -outputPath=$(RESULTS_DIR)/run 2>&1 | tee $(LOG_DIR)/4_tritonCTS.log
 	cp $(RESULTS_DIR)/run/final.v $@
 
@@ -426,6 +426,8 @@ route: $(RESULTS_DIR)/5_route.def \
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/route.guide: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/4_cts.def
 	@$(call BANNER, 5. ROUTING)
+	cp /openroad/module/FastRoute4-lefdef/build/third_party/rsyn/bin/rsyn \
+		/openroad/module/FastRoute4-lefdef/build/third_party/rsyn/bin/FRlefdef
 	envsubst < $(SCRIPTS_DIR)/fastroute.rsyn > $(OBJECTS_DIR)/fastroute.rsyn
 	FRlefdef --no-gui --script $(OBJECTS_DIR)/fastroute.rsyn 2>&1 | tee $(LOG_DIR)/5_1_FRlefdef.log
 
