@@ -426,7 +426,7 @@ route: $(RESULTS_DIR)/5_route.def \
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/route.guide: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/4_cts.def
 	@$(call BANNER, 5. ROUTING)
-	cp /openroad/module/FastRoute4-lefdef/build/third_party/rsyn/bin/rsyn \
+	cp -u /openroad/module/FastRoute4-lefdef/build/third_party/rsyn/bin/rsyn \
 		/openroad/module/FastRoute4-lefdef/build/third_party/rsyn/bin/FRlefdef
 	envsubst < $(SCRIPTS_DIR)/fastroute.rsyn > $(OBJECTS_DIR)/fastroute.rsyn
 	FRlefdef --no-gui --script $(OBJECTS_DIR)/fastroute.rsyn 2>&1 | tee $(LOG_DIR)/5_1_FRlefdef.log
