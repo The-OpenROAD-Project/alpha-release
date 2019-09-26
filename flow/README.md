@@ -3,19 +3,24 @@
 ![alt text](docs/flow.png "flow")
 
 ## Running the Flow
-1. Clone the repository
-```
-git clone https://github.com/The-OpenROAD-Project/alpha-release
-cd alpha-release/flow
-```
-2. An OpenROAD release must be setup to run the tests. More info in the build [README](../build/README.md)
-3. Run `make` to peform verilog to gds. This will run the default gcd_nangate45 test which runs very quickly
+1. Build Tools
+    ```
+    git clone --recursive https://github.com/The-OpenROAD-Project/alpha-release.git
+    cd alpha-release
+    make build-tools
+    ```
+2. Run OpenROAD Docker container
+    ```
+    docker run -it -v $(pwd):/openroad openroad/flow bash
+    [inside container] cd /openroad/flow
+    [inside container] make
+    ```
+3. `make` peforms verilog to gds. This will run the default gcd_nangate45 test which runs very quickly
 
 ## Selecting a testcase
 Sample desgin configurations are available in the `designs` directory. After running the default test to validate, you can select a new test using either of the following methods:
 1. Update the top of the Makefile to point to a design configuration file. Simply uncomment the testcase of interest to overwrite the default test
-2. When running any make commands, specify the design of interest. e.g. `make DESIGN_CONFIG=./designs/swerv_nangate45.mk`
-3. Export the `DESIGN_CONFIG` variable in your shell (e.g. `export DESIGN_CONFIG=./designs/swerv_nangate45.mk`) and all subsequent commands will use that design. 
+2. When running `make`, specify the design of interest. e.g. `make DESIGN_CONFIG=./designs/swerv_nangate45.mk`
 
 
 ## Adding new platforms

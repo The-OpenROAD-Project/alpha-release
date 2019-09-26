@@ -9,24 +9,35 @@ The IDEA program targets no-human-in-loop (NHIL) design, with 24-hour turnaround
 
 For a technical description of the OpenROAD flow, please refer to our DAC paper: [Toward an Open-Source Digital Flow: First Learnings from the OpenROAD Project](https://vlsicad.ucsd.edu/Publications/Conferences/371/c371.pdf). Also, available from ACM Digital Library ([doi:10.1145/3316781.3326334](https://dl.acm.org/citation.cfm?id=3326334))
 
-## Code Organization
-This repository serves 2 purposes:
-1. **Build**: It builds all tools that contribute to the flow in independent docker images. The tools are then combined into a single bundle and made available in the ["releases"](https://github.com/The-OpenROAD-Project/alpha-release/releases) section of the repository
-
-2. **Flow**: It contains reference recipes and scripts to run designs through the flow. It also contains platforms and test designs.
-
-The actual tools can be found in their respective repositories in [The OpenROAD Project](https://github.com/The-OpenROAD-Project) organization.
-
-## Setup
-:warning: At this time, we are currently recommending the use of pre-compiled binaries for CentOS 6/7. We plan to address some immediate build/install issues while we overhaul the tools to make them more cohesive. Support for newer unix distributions is also planned.
-
-- See instructions in the build [README](build) on building and assembling all of the OpenROAD tools into a package.
-
-- See instructions in the build [README](build#installing-builds) on how to install a pre-compiled package unto a Linux system
 
 ## Getting Started
+### Build Environment
+[Docker](https://docs.docker.com/install/linux/docker-ce/centos/) (version 17.0.0+) is required to build OpenROAD tools.
+
+```
+git clone --recursive https://github.com/The-OpenROAD-Project/alpha-release.git
+cd alpha-release
+make build-tools
+```
+
+**Build Destination:** each tool (represented a submodule) is built in its own subdirectory.
+
+### Run Environment
+To run OpenROAD flow, use the pre-built Docker image [openroad/flow](https://hub.docker.com/r/openroad/flow) that comes with run time dependencies installed. From the directory of the repository,
+
+```
+docker run -it -v $(pwd):/openroad openroad/flow bash
+[inside container] cd /openroad/flow
+[inside container] make
+```
+
 See the flow [README](flow#running-the-flow) for details about the flow and how to run designs through the flow
 
+## Code Organization
+
+1. **module**: It points to specific versions of the tools being used in OpenROAD flow. The [Makefile](Makefile) builds all tools from sources.
+
+2. **flow**: It contains reference recipes and scripts to run designs through the flow. It also contains platforms and test designs.
 
 ## Useful resources
 Your feedback is very welcome.
@@ -41,7 +52,7 @@ At this time we are focused on overhauling the build process, build testing, and
 
 ## License
 The alpha-release repository (build and run scripts) has a BSD 3-Clause License. The flow relies on several tools, platforms and designs that each have their own licenses:
-- Find the tool license at: `build/docker/{tool}/`
+- Find the tool license at: `module/{tool}/LICENSE`
 - Find the platform license at: `flow/platforms/{platform}/`
 - Find the design license at: `flow/designs/src/{design}/`
 
