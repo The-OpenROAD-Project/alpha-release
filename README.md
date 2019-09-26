@@ -20,7 +20,7 @@ cd alpha-release
 make build-tools
 ```
 
-**Build Destination:** each tool (represented a submodule) is built in its own subdirectory.
+**Build Destination:** each tool (represented as a submodule) is built in its own subdirectory.
 
 ### Run Environment
 To run OpenROAD flow, use the pre-built Docker image [openroad/flow](https://hub.docker.com/r/openroad/flow) that comes with run time dependencies installed. From the directory of the repository,
