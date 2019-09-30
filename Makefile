@@ -17,11 +17,11 @@ build-tools: $(TOOL_BUILD_TARGETS)
 # ==============================================================================
 # EXPORT TOOLS
 # ==============================================================================
-export-tools:
-	mkdir -p export
-	rm -rf export
+TIMESTAMP=$(shell date +"%Y.%m.%d")
 
-	# TODO: export tools
+export-tools:
+	rm -rf OpenROAD_$(TIMESTAMP)
+	mkdir -p OpenROAD_$(TIMESTAMP)
 
 # ==============================================================================
 # PUBLISH TO DOCKER HUB

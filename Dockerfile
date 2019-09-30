@@ -15,23 +15,19 @@ RUN pip3 install --upgrade pip && \
 # Mount volume
 VOLUME /openroad
 
-# Add OpenROAD tools to PATH
-ENV PATH=/openroad/module/yosys:$PATH
-ENV PATH=/openroad/module/Resizer/build:$PATH
-ENV PATH=/openroad/module/ioPlacer/build:/openroad/module/ioPlacer/scripts:$PATH
-ENV PATH=/openroad/module/RePlAce/build:/openroad/module/RePlAce/module/OpenSTA/app:/openroad/module/RePlAce/ntuplace:$PATH
-ENV PATH=/openroad/module/TritonMacroPlace/build:$PATH
-ENV PATH=/openroad/module/pdn/src/PdnPinDumper/build:/openroad/module/pdn/src/scripts:$PATH
-ENV TCLLIBPATH=/openroad/module/module/pdn/scripts:$TCLLIBPATH
-ENV PATH=/openroad/module/tapcell/bin:$PATH
-ENV PATH=/openroad/module/OpenDP/build:$PATH
-ENV PATH=/openroad/module/TritonRoute/build:$PATH
-ENV PATH=/openroad/module/TritonCTS/bin:/openroad/module/TritonCTS/third_party:$PATH
-ENV PATH=/openroad/module/TritonCTS/src/scripts:/openroad/module/TritonCTS/src/tech:/openroad/module/TritonCTS:$PATH
-ENV PATH=/openroad/module/FastRoute4-lefdef/build/third_party/rsyn/bin:$PATH
-
-# Other stuff
-ARG VERSION=0.0.1
-ENV OPENROAD=/openroad/OpenROAD-$VERSION
-ENV LD_LIBRARY_PATH=$OPENROAD/lib:$OPENROAD/lib/Linux-x86_64:$LD_LIBRARY_PATH
-
+# Configure Environment
+ARG VERSION=2019.10.01
+ENV OPENROAD_HOME=/openroad
+ENV PATH=$OPENROAD_HOME/module/yosys:$PATH
+ENV PATH=$OPENROAD_HOME/module/Resizer/build:$PATH
+ENV PATH=$OPENROAD_HOME/module/ioPlacer/build:$OPENROAD_HOME/module/ioPlacer/scripts:$PATH
+ENV PATH=$OPENROAD_HOME/module/RePlAce/build:$OPENROAD_HOME/module/RePlAce/module/OpenSTA/app:$OPENROAD_HOME/module/RePlAce/ntuplace:$PATH
+ENV PATH=$OPENROAD_HOME/module/TritonMacroPlace/build:$PATH
+ENV PATH=$OPENROAD_HOME/module/pdn/src/PdnPinDumper/build:$OPENROAD_HOME/module/pdn/src/scripts:$PATH
+ENV TCLLIBPATH=$OPENROAD_HOME/module/module/pdn/scripts:$TCLLIBPATH
+ENV PATH=$OPENROAD_HOME/module/tapcell/bin:$PATH
+ENV PATH=$OPENROAD_HOME/module/OpenDP/build:$PATH
+ENV PATH=$OPENROAD_HOME/module/TritonRoute/build:$PATH
+ENV PATH=$OPENROAD_HOME/module/TritonCTS/bin:$OPENROAD_HOME/module/TritonCTS/third_party:$PATH
+ENV PATH=$OPENROAD_HOME/module/TritonCTS/src/scripts:$OPENROAD_HOME/module/TritonCTS/src/tech:$OPENROAD_HOME/module/TritonCTS:$PATH
+ENV PATH=$OPENROAD_HOME/module/FastRoute4-lefdef/build/third_party/rsyn/bin:$PATH

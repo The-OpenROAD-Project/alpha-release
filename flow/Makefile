@@ -88,20 +88,20 @@ $(OBJECTS_DIR)/merged.lib: $(DESIGN_LIB_FILES)
 # Link flute data files
 # ==============================================================================
 ./PORT9.dat:
-	ln -sf ../module/RePlAce/test/$@ $@
+	ln -sf $(OPENROAD_HOME)/module/RePlAce/test/$@ $@
 ./POST9.dat:
-	ln -sf ../module/RePlAce/test/$@ $@
+	ln -sf $(OPENROAD_HOME)/module/RePlAce/test/$@ $@
 ./POWV9.dat:
-	ln -sf ../module/RePlAce/test/$@ $@
-../etc/PORT9.dat:
-	mkdir -p ../etc
-	ln -sf ../module/RePlAce/test/PORT9.dat $@
-../etc/POST9.dat:
-	mkdir -p ../etc
-	ln -sf ../module/RePlAce/test/POST9.dat $@
-../etc/POWV9.dat:
-	mkdir -p ../etc
-	ln -sf ../module/RePlAce/test/POWV9.dat $@
+	ln -sf $(OPENROAD_HOME)/module/RePlAce/test/$@ $@
+$(OPENROAD_HOME)/etc/PORT9.dat:
+	mkdir -p $(OPENROAD_HOME)/etc
+	ln -sf $(OPENROAD_HOME)/module/RePlAce/test/PORT9.dat $@
+$(OPENROAD_HOME)/etc/POST9.dat:
+	mkdir -p $(OPENROAD_HOME)/etc
+	ln -sf $(OPENROAD_HOME)/module/RePlAce/test/POST9.dat $@
+$(OPENROAD_HOME)/etc/POWV9.dat:
+	mkdir -p $(OPENROAD_HOME)/etc
+	ln -sf $(OPENROAD_HOME)/module/RePlAce/test/POWV9.dat $@
 
 
 
@@ -126,7 +126,7 @@ $(RESULTS_DIR)/1_1_yosys.v:  $(OBJECTS_DIR)/merged.lib
 	mkdir -p $(RESULTS_DIR) $(LOG_DIR) $(REPORTS_DIR)
 	yosys -l $(LOG_DIR)/1_yosys.log -c $(SYNTH_SCRIPT)
 
-$(RESULTS_DIR)/1_2_buffer.v: $(RESULTS_DIR)/1_1_yosys.v $(SDC_FILE) | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
+$(RESULTS_DIR)/1_2_buffer.v: $(RESULTS_DIR)/1_1_yosys.v $(SDC_FILE) | $(OPENROAD_HOME)/etc/PORT9.dat $(OPENROAD_HOME)/etc/POST9.dat $(OPENROAD_HOME)/etc/POWV9.dat
 	resizer $(SCRIPTS_DIR)/buffer.tcl \
 	        2>&1 | tee $(LOG_DIR)/1_2_buffer.log
 	@! grep --color "Error:" $(LOG_DIR)/1_2_buffer.log
@@ -321,7 +321,7 @@ $(RESULTS_DIR)/replace.gif: $(RESULTS_DIR)/3_1_place_gp.def
 
 # STEP 2: Resizing & Buffering
 #-------------------------------------------------------------------------------
-$(RESULTS_DIR)/3_2_place_resized.def: $(OBJECTS_DIR)/merged.lef $(RESULTS_DIR)/3_1_place_gp.def $(RESULTS_DIR)/2_floorplan.sdc | ../etc/PORT9.dat ../etc/POST9.dat ../etc/POWV9.dat
+$(RESULTS_DIR)/3_2_place_resized.def: $(OBJECTS_DIR)/merged.lef $(RESULTS_DIR)/3_1_place_gp.def $(RESULTS_DIR)/2_floorplan.sdc | $(OPENROAD_HOME)/etc/PORT9.dat $(OPENROAD_HOME)/etc/POST9.dat $(OPENROAD_HOME)/etc/POWV9.dat
 	resizer $(SCRIPTS_DIR)/resize.tcl \
 	        2>&1 | tee $(LOG_DIR)/3_2_resizer.log
 	# @! grep --color "Error:" $(LOG_DIR)/3_2_resizer.log
@@ -388,13 +388,13 @@ $(OBJECTS_DIR)/tritonCts.config: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)
 # Run TritonCTS
 # ------------------------------------------------------------------------------
 $(RESULTS_DIR)/4_cts.v: $(OBJECTS_DIR)/tritonCts.config | ./PORT9.dat ./POST9.dat ./POWV9.dat
-	/openroad/module/TritonCTS/runTritonCTS.tcl \
+	$(OPENROAD_HOME)/module/TritonCTS/runTritonCTS.tcl \
 	  -configFilePath=$< \
-	  -scriptsPath=/openroad/module/TritonCTS/src/scripts \
+	  -scriptsPath=$(OPENROAD_HOME)/module/TritonCTS/src/scripts \
 	  -techFilesPath=$(CTS_TECH_DIR) \
-	  -lefDefParserPath=/openroad/module/TritonCTS/third_party/lefdef2cts \
-	  -executablePath=/openroad/module/TritonCTS/bin/genHtree \
-	  -legalizerPath=/openroad/module/OpenDP/build/opendp \
+	  -lefDefParserPath=$(OPENROAD_HOME)/module/TritonCTS/third_party/lefdef2cts \
+	  -executablePath=$(OPENROAD_HOME)/module/TritonCTS/bin/genHtree \
+	  -legalizerPath=$(OPENROAD_HOME)/module/OpenDP/build/opendp \
 	  -outputPath=$(RESULTS_DIR)/run 2>&1 | tee $(LOG_DIR)/4_tritonCTS.log
 	cp $(RESULTS_DIR)/run/final.v $@
 
@@ -426,8 +426,8 @@ route: $(RESULTS_DIR)/5_route.def \
 #-------------------------------------------------------------------------------
 $(RESULTS_DIR)/route.guide: $(OBJECTS_DIR)/merged_padded.lef $(RESULTS_DIR)/4_cts.def
 	@$(call BANNER, 5. ROUTING)
-	cp -u /openroad/module/FastRoute4-lefdef/build/third_party/rsyn/bin/rsyn \
-		/openroad/module/FastRoute4-lefdef/build/third_party/rsyn/bin/FRlefdef
+	cp -u $(OPENROAD_HOME)/module/FastRoute4-lefdef/build/third_party/rsyn/bin/rsyn \
+		$(OPENROAD_HOME)/module/FastRoute4-lefdef/build/third_party/rsyn/bin/FRlefdef
 	envsubst < $(SCRIPTS_DIR)/fastroute.rsyn > $(OBJECTS_DIR)/fastroute.rsyn
 	FRlefdef --no-gui --script $(OBJECTS_DIR)/fastroute.rsyn 2>&1 | tee $(LOG_DIR)/5_1_FRlefdef.log
 
@@ -519,7 +519,7 @@ clean_all: clean_synth clean_floorplan clean_place clean_cts clean_route clean_f
 nuke:
 	rm -rf ./results ./logs ./reports ./objects
 	rm -rf ./POST9.dat ./PORT9.dat ./POWV9.dat
-	rm -rf ../etc/POST9.dat ../etc/PORT9.dat ../etc/POWV9.dat
+	rm -rf $(OPENROAD_HOME)/etc/POST9.dat $(OPENROAD_HOME)/etc/PORT9.dat $(OPENROAD_HOME)/etc/POWV9.dat
 	rm -rf layer_*.mps macrocell.list *best.plt *_pdn.def dummy.guide run.param
 	rm -rf *.rpt *.def.v innovus.*
 

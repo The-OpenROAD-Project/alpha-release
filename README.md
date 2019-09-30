@@ -23,6 +23,9 @@ make build-tools
 **Build Destination:** each tool (represented as a submodule) is built in its own subdirectory.
 
 ### Run Environment
+
+1. Run Using Docker
+
 To run OpenROAD flow, use the pre-built Docker image [openroad/flow](https://hub.docker.com/r/openroad/flow) that comes with run time dependencies installed. From the directory of the repository,
 
 ```
@@ -30,6 +33,15 @@ docker run -it -v $(pwd):/openroad openroad/flow bash
 [inside container] cd /openroad/flow
 [inside container] make
 ```
+
+2. Run On Baremetal [from local build]
+
+Add steps
+
+3. Run [from a release build]
+
+Add steps
+
 
 See the flow [README](flow#running-the-flow) for details about the flow and how to run designs through the flow
 
