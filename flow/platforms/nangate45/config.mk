@@ -27,6 +27,10 @@ export PLACE_SITE = FreePDK45_38x28_10R_NP_162NW_34O
 # Track information for generating DEF tracks
 export TRACKS_INFO_FILE = ./platforms/nangate45/tracks.info
 
+export IP_GLOBAL_CFG = ./platforms/nangate45/IP_global.cfg
+
+# export PDN_CFG = ./platforms/nangate45/PDN.cfg
+
 # Cell padding in microns to ease rout-ability
 export CELL_PAD_IN_MICRON = 1.0
 

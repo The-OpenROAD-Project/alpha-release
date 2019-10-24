@@ -3,13 +3,19 @@
 # ==============================================================================
 
 # DESIGN_CONFIG=./designs/aes_nangate45.mk
+# DESIGN_CONFIG=./designs/black_parrot_nangate45.mk
+# DESIGN_CONFIG=./designs/bp_be_top_nangate45.mk
+# DESIGN_CONFIG=./designs/bp_fe_top_nangate45.mk
 # DESIGN_CONFIG=./designs/dynamic_node_nangate45.mk
 # DESIGN_CONFIG=./designs/gcd_nangate45.mk
 # DESIGN_CONFIG=./designs/ibex_nangate45.mk
 # DESIGN_CONFIG=./designs/swerv_nangate45.mk
+# DESIGN_CONFIG=./designs/swerv_wrapper_nangate45.mk
 
 # DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/ariane_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/black_parrot_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/bp_be_top_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/bp_fe_top_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/coyote_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/dynamic_node_tsmc65lp.mk
@@ -71,9 +77,9 @@ endif
 
 # Pre-process Lefs
 # ==============================================================================
-$(OBJECTS_DIR)/merged.lef: $(MERGED_LEF)
+$(OBJECTS_DIR)/merged.lef: $(MERGED_LEF) $(ADDITIONAL_LEFS)
 	mkdir -p $(OBJECTS_DIR)
-	cp $< $@
+	./scripts/mergeLef.py --inputLef $(MERGED_LEF) $(ADDITIONAL_LEFS) --outputLef $@
 
 $(OBJECTS_DIR)/merged_padded.lef: $(OBJECTS_DIR)/merged.lef
 	$(SCRIPTS_DIR)/padLefMacro.py -p $(CELL_PAD_IN_MICRON) -i $< -o $@
@@ -182,7 +188,6 @@ $(RESULTS_DIR)/2_1_floorplan.def: $(OBJECTS_DIR)/merged.lef $(RESULTS_DIR)/1_syn
 	  -def $@ \
 	  $(FLOORPLAN_ARGS) \
 	  2>&1 | tee $(LOG_DIR)/2_1_verilog2def.log
-	sed -i 's/VERSION 5.5/VERSION 5.6/' $@
 
 # STEP 2: IO Placement
 #-------------------------------------------------------------------------------
@@ -525,13 +530,13 @@ nuke:
 	rm -rf ./POST9.dat ./PORT9.dat ./POWV9.dat
 	rm -rf ../etc/POST9.dat ../etc/PORT9.dat ../etc/POWV9.dat
 	rm -rf layer_*.mps macrocell.list *best.plt *_pdn.def dummy.guide run.param
-	rm -rf *.rpt *.def.v innovus.* pin_dumper.log
+	rm -rf *.rpt *.rpt.old *.def.v innovus.* pin_dumper.log
 
 
 # Open any def file using innovus
 #-------------------------------------------------------------------------------
 $(foreach def,$(notdir $(wildcard $(RESULTS_DIR)/*.def)),debug_$(def)): debug_%:
-	innovus -execute "loadLefFile $(MERGED_LEF) ; \
+	innovus -execute "loadLefFile $(OBJECTS_DIR)/merged.lef ; \
 	                  loadDefFile $(RESULTS_DIR)/$* ; \
 	                  win" \
 	                  -no_logv ; stty sane
