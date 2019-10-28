@@ -1419,7 +1419,6 @@ module cc_banks_0_ext(
   assign mem_0_0_RW0_en = RW0_en;
   assign mem_0_0_RW0_wmode = RW0_wmode;
 endmodule
-(* blackbox *)
 module split_tag_array_ext(
   input  [5:0]  RW0_addr,
   input         RW0_clk,
@@ -1429,6 +1428,8 @@ module split_tag_array_ext(
   input         RW0_wmode,
   input         RW0_wmask
 );
+`ifndef SYNTHESIS
+
   reg [21:0] ram [0:63];
   reg [31:0] _RAND_0;
   wire [21:0] ram_RW_0_r_0_data;
@@ -1511,8 +1512,9 @@ end
       ram_RW_0_addr_pipe_0 <= RW0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_array_0_0_ext(
   input  [6:0]  W0_addr,
   input         W0_clk,
@@ -1524,6 +1526,8 @@ module split_array_0_0_ext(
   output [63:0] R0_data,
   input         R0_en
 );
+`ifndef SYNTHESIS
+
   reg [63:0] ram [0:127];
   reg [63:0] _RAND_0;
   wire [63:0] ram_R_0_data;
@@ -1606,8 +1610,9 @@ end
       ram_R_0_addr_pipe_0 <= R0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_tag_array_0_ext(
   input  [5:0]  RW0_addr,
   input         RW0_clk,
@@ -1617,6 +1622,8 @@ module split_tag_array_0_ext(
   input         RW0_wmode,
   input         RW0_wmask
 );
+`ifndef SYNTHESIS
+
   reg [20:0] ram [0:63];
   reg [31:0] _RAND_0;
   wire [20:0] ram_RW_0_r_0_data;
@@ -1699,8 +1706,9 @@ end
       ram_RW_0_addr_pipe_0 <= RW0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_dataArrayB0Way_0_ext(
   input  [7:0]  RW0_addr,
   input         RW0_clk,
@@ -1709,6 +1717,8 @@ module split_dataArrayB0Way_0_ext(
   input         RW0_en,
   input         RW0_wmode
 );
+`ifndef SYNTHESIS
+
   reg [63:0] ram [0:255];
   reg [63:0] _RAND_0;
   wire [63:0] ram_RW_0_r_0_data;
@@ -1791,8 +1801,9 @@ end
       ram_RW_0_addr_pipe_0 <= RW0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_bim_data_array_0_ext(
   input  [8:0] RW0_addr,
   input        RW0_clk,
@@ -1802,6 +1813,8 @@ module split_bim_data_array_0_ext(
   input        RW0_wmode,
   input        RW0_wmask
 );
+`ifndef SYNTHESIS
+
   reg  ram [0:511];
   reg [31:0] _RAND_0;
   wire  ram_RW_0_r_0_data;
@@ -1884,8 +1897,9 @@ end
       ram_RW_0_addr_pipe_0 <= RW0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_btb_tag_array_ext(
   input  [8:0]  RW0_addr,
   input         RW0_clk,
@@ -1894,6 +1908,8 @@ module split_btb_tag_array_ext(
   input         RW0_en,
   input         RW0_wmode
 );
+`ifndef SYNTHESIS
+
   reg [19:0] ram [0:511];
   reg [31:0] _RAND_0;
   wire [19:0] ram_RW_0_r_0_data;
@@ -1976,8 +1992,9 @@ end
       ram_RW_0_addr_pipe_0 <= RW0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_btb_data_array_ext(
   input  [8:0]  RW0_addr,
   input         RW0_clk,
@@ -1986,6 +2003,8 @@ module split_btb_data_array_ext(
   input         RW0_en,
   input         RW0_wmode
 );
+`ifndef SYNTHESIS
+
   reg [48:0] ram [0:511];
   reg [63:0] _RAND_0;
   wire [48:0] ram_RW_0_r_0_data;
@@ -2068,8 +2087,9 @@ end
       ram_RW_0_addr_pipe_0 <= RW0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_counter_table_ext(
   input  [11:0] W0_addr,
   input         W0_clk,
@@ -2080,6 +2100,8 @@ module split_counter_table_ext(
   output [4:0]  R0_data,
   input         R0_en
 );
+`ifndef SYNTHESIS
+
   reg [4:0] ram [0:4095];
   reg [31:0] _RAND_0;
   wire [4:0] ram_R_0_data;
@@ -2162,8 +2184,9 @@ end
       ram_R_0_addr_pipe_0 <= R0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_l2_tlb_ram_ext(
   input  [8:0]  RW0_addr,
   input         RW0_clk,
@@ -2172,6 +2195,8 @@ module split_l2_tlb_ram_ext(
   input         RW0_en,
   input         RW0_wmode
 );
+`ifndef SYNTHESIS
+
   reg [44:0] ram [0:511];
   reg [63:0] _RAND_0;
   wire [44:0] ram_RW_0_r_0_data;
@@ -2254,8 +2279,9 @@ end
       ram_RW_0_addr_pipe_0 <= RW0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_cc_dir_ext(
   input  [9:0]  RW0_addr,
   input         RW0_clk,
@@ -2265,6 +2291,8 @@ module split_cc_dir_ext(
   input         RW0_wmode,
   input         RW0_wmask
 );
+`ifndef SYNTHESIS
+
   reg [15:0] ram [0:1023];
   reg [31:0] _RAND_0;
   wire [15:0] ram_RW_0_r_0_data;
@@ -2347,8 +2375,9 @@ end
       ram_RW_0_addr_pipe_0 <= RW0_addr;
     end
   end
+
+`endif
 endmodule
-(* blackbox *)
 module split_cc_banks_0_ext(
   input  [12:0] RW0_addr,
   input         RW0_clk,
@@ -2357,6 +2386,8 @@ module split_cc_banks_0_ext(
   input         RW0_en,
   input         RW0_wmode
 );
+`ifndef SYNTHESIS
+
   reg [63:0] ram [0:8191];
   reg [63:0] _RAND_0;
   wire [63:0] ram_RW_0_r_0_data;
@@ -2439,4 +2470,6 @@ end
       ram_RW_0_addr_pipe_0 <= RW0_addr;
     end
   end
+
+`endif
 endmodule
