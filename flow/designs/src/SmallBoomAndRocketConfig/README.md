@@ -1,6 +1,5 @@
 ### Summary
 SmallBoomAndRocketConfig from Chipyard Framework
-Currently has about 30,000 cells
 
 ### Source
 Generated 10/25/219
