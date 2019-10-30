@@ -12,7 +12,7 @@
 # DESIGN_CONFIG=./designs/swerv_nangate45.mk
 # DESIGN_CONFIG=./designs/swerv_wrapper_nangate45.mk
 
-# DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
+DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/ariane_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/black_parrot_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/bp_be_top_tsmc65lp.mk
@@ -27,6 +27,12 @@
 # DESIGN_CONFIG=./designs/tinyRocket_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/vb_tsmc65lp.mk
 
+# DESIGN_CONFIG=./designs/DualCoreRocketConfig_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/DualLargeBoomAndDualRocketConfig_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/DualMegaBoomConfig_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/DualSmallBoomConfig_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/MegaBoomConfig_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/SmallBoomAndRocketConfig_tsmc65lp.mk
 
 # Default design
 DESIGN_CONFIG ?= ./designs/gcd_nangate45.mk
@@ -549,3 +555,16 @@ run_test:
 	         --timeout 21600 \
 	         --workdir `pwd` < $(TEST_SCRIPT) \
 	         --joblog $(TEST_DIR)/parallel.log
+
+
+synth_dc:
+	mkdir -p $(REPORTS_DIR) $(RESULTS_DIR)
+	dc_shell-xg-t -f scripts/synth_dc.tcl
+	rm -rf *.syn *.pvl *.mr
+
+pt_dc:
+	primetime -f $(SCRIPTS_DIR)/pt_report_dc.tcl
+
+pt_yosys:
+	primetime -f $(SCRIPTS_DIR)/pt_report.tcl
+

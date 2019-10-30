@@ -59,7 +59,12 @@ if {$::env(PLATFORM) == "tsmc65lp"} {
 
 
 # generic synthesis
-synth  -top $::env(DESIGN_NAME) -flatten
+
+# Flat
+# synth  -top $::env(DESIGN_NAME) -flatten
+
+# Hierarchical (+ -noshare)
+synth  -top $::env(DESIGN_NAME) -noshare
 
 # Optimize the design
 opt -purge
