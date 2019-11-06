@@ -61,10 +61,16 @@ if {$::env(PLATFORM) == "tsmc65lp"} {
 # generic synthesis
 
 # Flat
-# synth  -top $::env(DESIGN_NAME) -flatten
+synth  -top $::env(DESIGN_NAME) -flatten
 
 # Hierarchical (+ -noshare)
-synth  -top $::env(DESIGN_NAME) -noshare
+# select t:bmux* t:mux* t:add_* t:case_box* t:CDN_mux* t:CDN_bmux* t:equal_* t:instr_scan_* t:mult_* t:nequal_* t:not_op t:shift_*
+# flatten
+# select -clear
+# synth  -top $::env(DESIGN_NAME)
+# select t:CDN_flop
+# flatten
+# select -clear
 
 # Optimize the design
 opt -purge

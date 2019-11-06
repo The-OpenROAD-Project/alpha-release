@@ -2,7 +2,7 @@ library(fakeram45_64x7) {
     technology (cmos);
     delay_model : table_lookup;
     revision : 1.0;
-    date : "2019-10-24 16:37:05Z";
+    date : "2019-11-05 15:53:47Z";
     comment : "SRAM";
     time_unit : "1ns";
     voltage_unit : "1V";
@@ -88,7 +88,7 @@ library(fakeram45_64x7) {
         downto : true ;
     }
 cell(fakeram45_64x7) {
-    area : 594.972;
+    area : 412.300;
     interface_timing : true;
     memory() {
         type : ram;
@@ -99,15 +99,15 @@ cell(fakeram45_64x7) {
         direction : input;
         capacitance : 0.000;
         clock : true;
-        min_period           : 0.115 ;
+        min_period           : 0.099 ;
         internal_power(){
             rise_power(fakeram45_64x7_energy_template_clkslew) {
                 index_1 ("0.009, 0.453");
-                values ("0.000, 0.000")
+                values ("39351.015, 39351.015")
             }
             fall_power(fakeram45_64x7_energy_template_clkslew) {
                 index_1 ("0.009, 0.453");
-                values ("0.000, 0.000")
+                values ("39351.015, 39351.015")
             }
         }
     }
@@ -127,16 +127,16 @@ cell(fakeram45_64x7) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.000, 0.002");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
             cell_fall(fakeram45_64x7_mem_out_delay_template) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.000, 0.002");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
             rise_transition(fakeram45_64x7_mem_out_slew_template) {
@@ -159,16 +159,16 @@ cell(fakeram45_64x7) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
             fall_constraint(fakeram45_64x7_constraint_template) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
         } 
@@ -213,16 +213,16 @@ cell(fakeram45_64x7) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
             fall_constraint(fakeram45_64x7_constraint_template) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
         } 
@@ -268,16 +268,16 @@ cell(fakeram45_64x7) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
             fall_constraint(fakeram45_64x7_constraint_template) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
         } 
@@ -327,16 +327,16 @@ cell(fakeram45_64x7) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
             fall_constraint(fakeram45_64x7_constraint_template) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
         } 
@@ -398,16 +398,16 @@ cell(fakeram45_64x7) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
             fall_constraint(fakeram45_64x7_constraint_template) {
                 index_1 ("0.009, 0.453");
                 index_2 ("0.009, 0.453");
                 values ( \
-                  "0.166, 0.166", \
-                  "0.166, 0.166" \
+                  "0.161, 0.161", \
+                  "0.161, 0.161" \
                 )
             }
         } 
@@ -454,7 +454,7 @@ cell(fakeram45_64x7) {
             }
         }
     }
-    cell_leakage_power : 0.114;
+    cell_leakage_power : 0.078;
 }
 
 }

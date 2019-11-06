@@ -12,7 +12,7 @@
 # DESIGN_CONFIG=./designs/swerv_nangate45.mk
 # DESIGN_CONFIG=./designs/swerv_wrapper_nangate45.mk
 
-DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
+# DESIGN_CONFIG=./designs/aes_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/ariane_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/black_parrot_tsmc65lp.mk
 # DESIGN_CONFIG=./designs/bp_be_top_tsmc65lp.mk
@@ -249,8 +249,6 @@ ifeq ($(RUN_MACRO_PLACEMENT),1)
 	    -output $(DESIGN_NAME) \
 	    -globalConfig $(IP_GLOBAL_CFG) \
 	    -depth 3 \
-	    -plot \
-	    -westFix \
 	    | tee $(LOG_DIR)/2_4_fplan.log
 	    mv $(DESIGN_NAME)_best.def $@
 else

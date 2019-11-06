@@ -1,7 +1,7 @@
 export DESIGN_NAME = bp_fe_top
 export PLATFORM    = nangate45
 
-export VERILOG_FILES = ./designs/src/bp_fe_top/design.v \
+export VERILOG_FILES = ./designs/src/bp_fe_top/pickled.v \
                        ./designs/src/bp_fe_top/nangate45_macros.v
 export SDC_FILE      = ./designs/src/bp_fe_top/design.sdc
 

@@ -1,7 +1,7 @@
 export DESIGN_NAME = black_parrot
 export PLATFORM    = nangate45
 
-export VERILOG_FILES = ./designs/src/black_parrot/design.v \
+export VERILOG_FILES = ./designs/src/black_parrot/pickled.v \
                        ./designs/src/black_parrot/nangate45_macros.v
 export SDC_FILE      = ./designs/src/black_parrot/design.sdc
 
