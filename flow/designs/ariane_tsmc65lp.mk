@@ -1,7 +1,7 @@
 export DESIGN_NAME = ariane
 export PLATFORM    = tsmc65lp
 
-export VERILOG_FILES = ./designs/src/ariane/design.v
+export VERILOG_FILES = ./designs/src/ariane/ariane.sv2v.v
 export SDC_FILE      = ./designs/src/ariane/design.sdc
 
 export MERGED_LEF = ./platforms/tsmc65lp/merged.lef

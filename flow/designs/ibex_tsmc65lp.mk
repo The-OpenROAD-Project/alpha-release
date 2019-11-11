@@ -1,7 +1,7 @@
 export DESIGN_NAME = ibex_core
 export PLATFORM    = tsmc65lp
 
-export VERILOG_FILES = ./designs/src/ibex/design.v
+export VERILOG_FILES = ./designs/src/ibex/ibex_core.sv2v.v
 export SDC_FILE      = ./designs/src/ibex/design.sdc
 
 export MERGED_LEF = ./platforms/tsmc65lp/merged.lef

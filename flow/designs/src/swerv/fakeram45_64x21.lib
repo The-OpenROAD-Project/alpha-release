@@ -2,7 +2,7 @@ library(fakeram45_64x21) {
     technology (cmos);
     delay_model : table_lookup;
     revision : 1.0;
-    date : "2019-10-21 21:16:44Z";
+    date : "2019-11-07 17:35:04Z";
     comment : "SRAM";
     time_unit : "1ns";
     voltage_unit : "1V";
@@ -10,7 +10,7 @@ library(fakeram45_64x21) {
     leakage_power_unit : "1mW";
     nom_process : 1;
     nom_temperature : 25.000;
-    nom_voltage : 1.0;
+    nom_voltage : 1.1;
     capacitive_load_unit (1,pf);
 
     pulling_resistance_unit : "1kohm";
@@ -18,7 +18,7 @@ library(fakeram45_64x21) {
     operating_conditions(tt_1.0_25.0) {
         process : 1;
         temperature : 25.000;
-        voltage : 1.0;
+        voltage : 1.1;
         tree_type : balanced_tree;
     }
 
@@ -88,7 +88,7 @@ library(fakeram45_64x21) {
         downto : true ;
     }
 cell(fakeram45_64x21) {
-    area : 789.798;
+    area : 809.970;
     interface_timing : true;
     memory() {
         type : ram;
@@ -103,11 +103,11 @@ cell(fakeram45_64x21) {
         internal_power(){
             rise_power(fakeram45_64x21_energy_template_clkslew) {
                 index_1 ("0.009, 0.453");
-                values ("0.000, 0.000")
+                values ("39351.015, 39351.015")
             }
             fall_power(fakeram45_64x21_energy_template_clkslew) {
                 index_1 ("0.009, 0.453");
-                values ("0.000, 0.000")
+                values ("39351.015, 39351.015")
             }
         }
     }

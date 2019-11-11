@@ -1,7 +1,7 @@
 export DESIGN_NAME = bsg_manycore_tile
 export PLATFORM    = tsmc65lp
 
-export VERILOG_FILES = ./designs/src/vb/design.v
+export VERILOG_FILES = ./designs/src/vb/bsg_manycore_tile.sv2v.v
 export SDC_FILE      = ./designs/src/vb/design.sdc
 
 export MERGED_LEF = ./platforms/tsmc65lp/merged.lef

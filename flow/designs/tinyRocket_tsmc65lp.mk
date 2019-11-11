@@ -1,7 +1,13 @@
 export DESIGN_NAME = RocketTile
 export PLATFORM    = tsmc65lp
 
-export VERILOG_FILES = $(wildcard ./designs/src/tinyRocket/*.v)
+export VERILOG_FILES = ./designs/src/tinyRocket/AsyncResetReg.v \
+                       ./designs/src/tinyRocket/ClockDivider2.v \
+                       ./designs/src/tinyRocket/ClockDivider3.v \
+                       ./designs/src/tinyRocket/plusarg_reader.v \
+                       ./designs/src/tinyRocket/freechips.rocketchip.system.TinyConfig.v \
+                       ./designs/src/tinyRocket/freechips.rocketchip.system.TinyConfig.tsmc65lp.v
+
 export SDC_FILE      = ./designs/src/tinyRocket/RocketTile.sdc
 
 export MERGED_LEF = ./platforms/tsmc65lp/merged.lef

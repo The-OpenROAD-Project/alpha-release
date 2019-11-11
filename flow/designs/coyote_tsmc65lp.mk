@@ -1,7 +1,7 @@
 export DESIGN_NAME = bsg_rocket_node_client_rocc
 export PLATFORM    = tsmc65lp
 
-export VERILOG_FILES = ./designs/src/coyote/design.v
+export VERILOG_FILES = ./designs/src/coyote/bsg_rocket_node_client_rocc.sv2v.v
 export SDC_FILE      = ./designs/src/coyote/design.sdc
 
 export MERGED_LEF = ./platforms/tsmc65lp/merged.lef
