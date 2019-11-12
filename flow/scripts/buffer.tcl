@@ -1,3 +1,24 @@
+################################################################################
+# This script is intended to be run in the OpenSTA/Resizer framework.
+#
+# Purpose: It reads an input verilog file (from yosys) and performs buffering on
+#          high fanout nets to reduce routing/congestion issues experienced by
+#          tools further down in the flow.
+#          - For high fanout nets from tie-hi/low cells, the script adds more
+#            of the tie cells instead of buffering
+#          - The primary clock net ($::env(CLOCK_PORT)) is excluded from buffering
+#          - Other high fanout nets are buffered using an algorithm that attempts
+#            to implement a balanced tree
+# Author: Tutu Ajayi
+#
+################################################################################
+
+puts "Max Fanout Settings: $::env(MAX_FANOUT)"
+
+################################################################################
+# 1) Open the design
+################################################################################
+
 # Read liberty files
 foreach libFile $::env(LIB_FILES) {
   read_liberty $libFile
@@ -13,11 +34,31 @@ link_design $::env(DESIGN_NAME)
 read_sdc $::env(SDC_FILE)
 
 
-puts "Max Fanout Settings: $::env(MAX_FANOUT)"
+################################################################################
+# 2) Search for floating nets and print them out
+################################################################################
+
+set floatingNetObjs ""
+foreach net [get_nets *] {
+  set pinCount [llength [get_pins -of $net]]
+
+  if {$pinCount == 1} {
+    lappend floatingNetObjs $net
+  }
+}
+
+# Print user message
+if {[llength $floatingNetObjs] > 0} {
+  puts "\n---------------------------------------------------------------------"
+  puts "WARNING: [llength $floatingNetObjs] floating nets"
+  foreach net $floatingNetObjs {
+    puts " - [get_full_name $net]"
+  }
+}
 
 
 ################################################################################
-# Handle Tie High
+# 3a) Handle Tie High
 ################################################################################
 
 # Setup tie cell information
@@ -77,7 +118,7 @@ foreach netObj $tieHiHighFanoutNetObjs {
 }
 
 ################################################################################
-# Handle Tie Low
+# 3b) Handle Tie Low
 # Same as Tie Hi (Should probably make it a function)
 ################################################################################
 
@@ -141,7 +182,7 @@ foreach netObj $tieLoHighFanoutNetObjs {
 
 
 ################################################################################
-# Handle Other High Fanout nets
+# 4) Handle Other High Fanout nets
 ################################################################################
 
 
