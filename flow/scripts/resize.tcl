@@ -23,10 +23,8 @@ foreach cell $::env(DONT_USE_CELLS) {
   set dont_use_cells "$dont_use_cells [get_full_name [get_lib_cells */$cell]]"
 }
 
-# DISABLED repair max slew due to crashes running some designs
-       # -repair_max_slew \
-
-resize -buffer_inputs \
+resize -repair_max_slew \
+       -buffer_inputs \
        -buffer_outputs \
        -resize \
        -repair_max_cap \
@@ -35,10 +33,22 @@ resize -buffer_inputs \
 
 
 # final report
-report_checks > $::env(REPORTS_DIR)/3_resize_checks.rpt
-report_tns > $::env(REPORTS_DIR)/3_resize_tns.rpt
-report_wns > $::env(REPORTS_DIR)/3_resize_wns.rpt
+log_begin $::env(REPORTS_DIR)/3_resize_report.rpt
+
+
+report_checks -path_delay min
+report_checks -path_delay max
+report_checks -unconstrained
+
+report_tns
+report_wns
+
+
+report_power
+
 report_design_area
+
+log_end
 
 # write output
 write_def $::env(RESULTS_DIR)/3_2_place_resized.def
